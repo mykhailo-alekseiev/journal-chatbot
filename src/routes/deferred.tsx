@@ -18,9 +18,7 @@ const slowServerFn = createServerFn({ method: "GET" })
 export const Route = createFileRoute("/deferred")({
   loader: async () => {
     return {
-      deferredStuff: new Promise<string>((r) =>
-        setTimeout(() => r("Hello deferred!"), 2000)
-      ),
+      deferredStuff: new Promise<string>((r) => setTimeout(() => r("Hello deferred!"), 2000)),
       deferredPerson: slowServerFn({ data: "Tanner Linsley" }),
       person: await personServerFn({ data: "John Doe" }),
     };
