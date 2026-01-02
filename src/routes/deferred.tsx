@@ -18,7 +18,9 @@ const slowServerFn = createServerFn({ method: "GET" })
 export const Route = createFileRoute("/deferred")({
   loader: async () => {
     return {
-      deferredStuff: new Promise<string>((r) => setTimeout(() => r("Hello deferred!"), 2000)),
+      deferredStuff: new Promise<string>((r) =>
+        setTimeout(() => r("Hello deferred!"), 2000)
+      ),
       deferredPerson: slowServerFn({ data: "Tanner Linsley" }),
       person: await personServerFn({ data: "John Doe" }),
     };
@@ -36,20 +38,18 @@ function Deferred() {
         {person.name} - {person.randomNumber}
       </div>
       <Suspense fallback={<div>Loading person...</div>}>
-        <Await
-          promise={deferredPerson}
-          children={(data) => (
+        <Await promise={deferredPerson}>
+          {(data: { name: string; randomNumber: number }) => (
             <div data-testid="deferred-person">
               {data.name} - {data.randomNumber}
             </div>
           )}
-        />
+        </Await>
       </Suspense>
       <Suspense fallback={<div>Loading stuff...</div>}>
-        <Await
-          promise={deferredStuff}
-          children={(data) => <h3 data-testid="deferred-stuff">{data}</h3>}
-        />
+        <Await promise={deferredStuff}>
+          {(data: string) => <h3 data-testid="deferred-stuff">{data}</h3>}
+        </Await>
       </Suspense>
       <div>Count: {count}</div>
       <div>
