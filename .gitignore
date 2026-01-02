@@ -19,3 +19,4 @@ dist/
 /blob-report/
 /playwright/.cache/
 .tanstack
+.wrangler
