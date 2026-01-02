@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
+    "routes:generate": "@tanstack/router-cli generate",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",
