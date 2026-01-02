@@ -9,32 +9,36 @@ Journal Chatbot is a personal AI-powered journal assistant built with:
 - **Vercel AI SDK** for chat interface and streaming
 - **Cloudflare Workers** as deployment target
 - **Tailwind CSS v4** for styling
+- **shadcn/ui** for UI components (base-vega style)
 
 ## Development Commands
 
 ```bash
 # Development server (runs on port 3000)
-npm run dev
+bun run dev
 
 # Production build (builds + type-checks)
-npm run build
+bun run build
 
 # Preview production build
-npm run preview
+bun run preview
 
 # Deploy to Cloudflare Workers
-npm run deploy
+bun run deploy
 
 # Linting
-npm run lint          # Check for issues
-npm run lint:fix      # Auto-fix issues
+bun run lint          # Check for issues
+bun run lint:fix      # Auto-fix issues
 
 # Formatting
-npm run format        # Format code
-npm run format:check  # Check formatting
+bun run format        # Format code
+bun run format:check  # Check formatting
 
 # Generate Cloudflare types
-npm run cf-typegen
+bun run cf-typegen
+
+# Add shadcn UI components
+bunx shadcn@latest add <component-name>
 ```
 
 ## Architecture
@@ -65,8 +69,11 @@ npm run cf-typegen
 ### File Structure Conventions
 - `src/routes/__root.tsx` - Root layout with error boundaries
 - `src/components/` - Reusable components (DefaultCatchBoundary, NotFound)
+- `src/components/ui/` - shadcn/ui components (auto-generated, customize as needed)
+- `src/lib/utils.ts` - Utility functions including `cn()` for class merging
 - `src/utils/seo.ts` - SEO meta tag helper
-- `src/styles/app.css` - Global Tailwind styles
+- `src/styles/app.css` - Global Tailwind styles and shadcn CSS variables
+- `components.json` - shadcn/ui configuration
 
 ### Configuration
 - **Vite plugins**: Tailwind, TanStack Start, Cloudflare, React
@@ -86,12 +93,35 @@ npm run cf-typegen
 - 404 handling: `NotFound` component
 - Both configured in `src/router.tsx`
 
+### UI Components (shadcn/ui)
+- **Component library**: [shadcn/ui](https://ui.shadcn.com/) - copy-paste components, not a dependency
+- **Style variant**: `base-vega` with CSS variables
+- **Icon library**: Lucide React
+- **Component location**: `src/components/ui/`
+
+**Adding new components:**
+```bash
+bunx shadcn@latest add <component-name>
+```
+
+**Available components:** alert-dialog, badge, button, card, combobox, dropdown-menu, field, input-group, input, label, select, separator, textarea
+
+**Usage patterns:**
+- Import from `~/components/ui/<component>`
+- Use `cn()` utility for conditional/merged Tailwind classes
+- Components use Radix UI primitives for accessibility
+- Customize by editing the component source directly
+
 ## Key Implementation Notes
 
 1. **Route generation**: Routes are auto-generated. After adding/removing route files, the dev server will regenerate `routeTree.gen.ts`
 
 2. **AI model configuration**: The chat API currently uses a placeholder model (`"zai/glm-4.7"`). Update this in `src/routes/api/chat.ts` when integrating a real model.
 
-3. **Cloudflare deployment**: Use `npm run deploy` which builds and deploys via Wrangler. Ensure `.env` variables are configured in Cloudflare dashboard for production.
+3. **Cloudflare deployment**: Use `bun run deploy` which builds and deploys via Wrangler. Ensure `.env` variables are configured in Cloudflare dashboard for production.
 
 4. **Styling approach**: Uses Tailwind CSS v4 with dark mode support. Global styles in `src/styles/app.css`, inline classes in components.
+
+5. **UI components**: Prefer shadcn/ui components from `~/components/ui/` over custom implementations. Use `cn()` from `~/lib/utils` for merging Tailwind classes.
+
+6. **Package manager**: Use `bun` instead of `npm` or `yarn`. Run `bun install`, `bun run dev`, etc.
