@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
     "cf-typegen": "wrangler types",
-    "routes:generate": "@tanstack/router-cli generate",
+    "routes:gen": "tsr generate",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.17.1",
     "@tailwindcss/vite": "4.1.18",
+    "@tanstack/router-cli": "^1.141.8",
     "@types/node": "22.5.4",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
