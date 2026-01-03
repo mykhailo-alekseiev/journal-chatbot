@@ -80,11 +80,12 @@ bunx shadcn@latest add <component-name>
 
 ### File Structure
 
-- `src/routes/_authed.tsx` - Auth guard layout (protects all `_authed/*` routes)
-- `src/utils/supabase.ts` - Supabase SSR client (`getSupabaseServerClient()`)
-- `src/lib/queryClient.ts` - TanStack Query config and TypeScript utilities
-- `src/components/ui/` - shadcn/ui components (customizable)
-- `src/lib/utils.ts` - Utilities including `cn()` for class merging
+- `src/routes/` - File-based routes (auth routes, `_authed/` for protected routes)
+- `src/components/` - Reusable components (Auth, Login, error boundaries)
+- `src/components/ui/` - shadcn/ui components
+- `src/lib/` - Shared utilities and configuration (queryClient, utils)
+- `src/utils/` - App-specific utilities (Supabase client, SEO)
+- `src/styles/` - Global CSS and Tailwind configuration
 
 ### Configuration
 
@@ -151,62 +152,3 @@ bunx shadcn@latest add <component-name>
 4. **AI model**: Placeholder `"zai/glm-4.7"` in `src/routes/api/chat.ts` - update when integrating real model
 
 5. **Package manager**: Use `bun` (not npm/yarn)
-
-## Common Patterns
-
-### Creating a Server Function with Authentication
-
-```typescript
-import { createServerFn } from '@tanstack/react-start'
-import { getSupabaseServerClient } from '~/utils/supabase'
-
-export const myServerFn = createServerFn({ method: 'POST' })
-  .inputValidator((d: { /* your input type */ }) => d)
-  .handler(async ({ data }) => {
-    const supabase = getSupabaseServerClient()
-
-    // Get current user
-    const { data: { user }, error } = await supabase.auth.getUser()
-    if (error || !user) {
-      return { error: true, message: 'Unauthorized' }
-    }
-
-    // Your logic here with authenticated user
-    // ...
-
-    return { success: true }
-  })
-```
-
-### Using Mutations in Components
-
-```typescript
-import { useMutation } from '@tanstack/react-query'
-import { useServerFn } from '@tanstack/react-start'
-import { myServerFn } from '../routes/my-route'
-
-function MyComponent() {
-  const mutation = useMutation({
-    mutationFn: useServerFn(myServerFn),
-    onSuccess: (data) => {
-      if (!data?.error) {
-        // Handle success
-      }
-    },
-  })
-
-  return (
-    <form onSubmit={(e) => {
-      e.preventDefault()
-      const formData = new FormData(e.target)
-      mutation.mutate({
-        data: {
-          field: formData.get('field') as string
-        }
-      })
-    }}>
-      {/* form fields */}
-    </form>
-  )
-}
-```
