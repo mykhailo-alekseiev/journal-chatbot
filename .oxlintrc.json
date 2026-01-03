@@ -139,10 +139,5 @@
     "builtin": true
   },
   "globals": {},
-  "ignorePatterns": [
-    "**/build",
-    "**/public",
-    "pnpm-lock.yaml",
-    "routeTree.gen.ts"
-  ]
+  "ignorePatterns": ["**/build", "**/public", "pnpm-lock.yaml", "routeTree.gen.ts"]
 }
