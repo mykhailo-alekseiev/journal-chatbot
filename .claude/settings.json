@@ -1,4 +1,17 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run format || true"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
