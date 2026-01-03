@@ -72,12 +72,6 @@ bunx shadcn@latest add <component-name>
 - **Frontend** (`src/routes/_authed/chat.tsx`): Uses `useChat()` from `@ai-sdk/react`, protected route
 - **Backend** (`src/routes/api/chat.ts`): Uses `streamText()` with placeholder model `"zai/glm-4.7"`
 
-### State Management (TanStack Query)
-
-- **Config** (`src/lib/queryClient.ts`): No refetch on window focus, no retry, 1-minute stale time
-- **Pattern**: Server functions with `createServerFn()`, client mutations with `useMutation()`
-- **TypeScript utilities**: `ApiFnReturnType<T>`, `QueryConfig<T>`, `MutationConfig<T>` available
-
 ### File Structure
 
 - `src/routes/` - File-based routes (auth routes, `_authed/` for protected routes)
