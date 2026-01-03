@@ -1,13 +1,39 @@
 /// <reference types="vite/client" />
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { createServerFn } from "@tanstack/react-start";
 import * as React from "react";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import { NotFound } from "~/components/NotFound";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
+import { getSupabaseServerClient } from "~/utils/supabase";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient } from "@tanstack/react-query";
 
-export const Route = createRootRoute({
+const fetchUser = createServerFn({ method: "GET" }).handler(async () => {
+  const supabase = getSupabaseServerClient();
+  const { data, error: _error } = await supabase.auth.getUser();
+
+  if (!data.user?.email) {
+    return null;
+  }
+
+  return {
+    email: data.user.email,
+  };
+});
+
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
+  beforeLoad: async () => {
+    const user = await fetchUser();
+
+    return {
+      user,
+    };
+  },
   head: () => ({
     meta: [
       {
@@ -59,6 +85,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <TanStackRouterDevtools position="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-left" />
         <Scripts />
       </body>
     </html>
