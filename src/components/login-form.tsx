@@ -57,9 +57,8 @@ export function LoginForm() {
               }}
             >
               <FieldGroup>
-                <form.Field
-                  name="email"
-                  children={(field) => (
+                <form.Field name="email">
+                  {(field) => (
                     <Field>
                       <FieldLabel htmlFor="email">Email</FieldLabel>
                       <Input
@@ -73,15 +72,14 @@ export function LoginForm() {
                       />
                       {field.state.meta.errors.map((error, i) => (
                         <p key={i} className="text-sm text-red-500 mt-1">
-                          {error}
+                          {error?.message}
                         </p>
                       ))}
                     </Field>
                   )}
-                />
-                <form.Field
-                  name="password"
-                  children={(field) => (
+                </form.Field>
+                <form.Field name="password">
+                  {(field) => (
                     <Field>
                       <FieldLabel htmlFor="password">Password</FieldLabel>
                       <Input
@@ -94,16 +92,15 @@ export function LoginForm() {
                       />
                       {field.state.meta.errors.map((error, i) => (
                         <p key={i} className="text-sm text-red-500 mt-1">
-                          {error}
+                          {error?.message}
                         </p>
                       ))}
                     </Field>
                   )}
-                />
+                </form.Field>
                 <Field>
-                  <form.Subscribe
-                    selector={(state) => [state.canSubmit, state.isSubmitting]}
-                    children={([canSubmit, isSubmitting]) => (
+                  <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+                    {([canSubmit, isSubmitting]) => (
                       <Button
                         type="submit"
                         className="w-full"
@@ -112,7 +109,7 @@ export function LoginForm() {
                         {isSubmitting ? "Logging in..." : "Login"}
                       </Button>
                     )}
-                  />
+                  </form.Subscribe>
                   {loginMutation.error && (
                     <p className="text-sm text-red-500 mt-2 text-center">
                       {loginMutation.error.message}
@@ -120,7 +117,7 @@ export function LoginForm() {
                   )}
                   <p className="text-sm text-center mt-4">
                     Don&apos;t have an account?{" "}
-                    <Link href="/signup" className="underline">
+                    <Link to="/signup" className="underline">
                       Sign up
                     </Link>
                   </p>

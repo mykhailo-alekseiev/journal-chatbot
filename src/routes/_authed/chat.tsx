@@ -50,9 +50,8 @@ function Chat() {
           form.handleSubmit();
         }}
       >
-        <form.Field
-          name="message"
-          children={(field) => (
+        <form.Field name="message">
+          {(field) => (
             <input
               className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
               value={field.state.value}
@@ -61,7 +60,7 @@ function Chat() {
               onBlur={field.handleBlur}
             />
           )}
-        />
+        </form.Field>
       </form>
     </div>
   );
