@@ -32,6 +32,11 @@ export const signupFn = createServerFn({ method: "POST" })
   });
 
 export const Route = createFileRoute("/signup")({
+  beforeLoad: ({ context }) => {
+    if (context.user) {
+      throw redirect({ to: "/chat" });
+    }
+  },
   component: SignupComp,
 });
 
