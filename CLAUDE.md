@@ -50,6 +50,9 @@ bun run format:check  # Check formatting
 # Generate Cloudflare types
 bun run cf-typegen
 
+# Generate Supabase types (requires SUPABASE_PROJECT_ID in .env)
+bun run db:types
+
 # Add shadcn UI components
 bunx shadcn@latest add <component-name>
 ```
@@ -87,8 +90,11 @@ bunx shadcn@latest add <component-name>
 - `src/routes/` - File-based routes (auth routes, `_authed/` for protected routes)
 - `src/components/` - Reusable components (Auth, Login, error boundaries)
 - `src/components/ui/` - shadcn/ui components
-- `src/lib/` - Shared utilities and configuration (queryClient, utils)
-- `src/utils/` - App-specific utilities (Supabase client, SEO)
+- `src/components/chat/` - Chat-specific components (ToolInvocationDisplay)
+- `src/lib/` - Shared utilities and types
+- `src/features/` - Domain-specific modules
+- `src/features/journal/` - Journal assistant (types, tools, prompts, config)
+- `src/utils/` - App-specific utilities (Supabase client, SEO, logging)
 - `src/styles/` - Global CSS and Tailwind configuration
 
 ### Configuration
@@ -114,6 +120,7 @@ Required:
 
 Optional:
 
+- `SUPABASE_PROJECT_ID` - Project ID for type generation (`bun run db:types`)
 - `AI_GATEWAY_API_KEY` - API key for AI gateway (if used)
 
 ### Error Handling
