@@ -4,21 +4,28 @@ import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "~/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { loginFn } from "~/routes/_authed";
+import { signupFn } from "~/routes/signup";
 
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+const signupSchema = z
+  .object({
+    fullName: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
 
-export function LoginForm() {
+export function SignupForm() {
   const router = useRouter();
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const result = await loginFn({ data });
+  const signupMutation = useMutation({
+    mutationFn: async (data: { fullName: string; email: string; password: string }) => {
+      const result = await signupFn({ data });
       if (result?.error) {
         throw new Error(result.message);
       }
@@ -30,14 +37,20 @@ export function LoginForm() {
 
   const form = useForm({
     defaultValues: {
+      fullName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
     validators: {
-      onChange: loginSchema,
+      onBlur: signupSchema,
     },
     onSubmit: async ({ value }) => {
-      await loginMutation.mutateAsync(value);
+      await signupMutation.mutateAsync({
+        fullName: value.fullName,
+        email: value.email,
+        password: value.password,
+      });
     },
   });
 
@@ -46,8 +59,8 @@ export function LoginForm() {
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Login to your account</CardTitle>
-            <CardDescription>Enter your email below to login to your account</CardDescription>
+            <CardTitle className="text-2xl">Create an account</CardTitle>
+            <CardDescription>Enter your information below to create your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -57,6 +70,27 @@ export function LoginForm() {
               }}
             >
               <FieldGroup>
+                <form.Field name="fullName">
+                  {(field) => (
+                    <Field>
+                      <FieldLabel htmlFor="fullName">Full Name</FieldLabel>
+                      <Input
+                        id="fullName"
+                        type="text"
+                        placeholder="John Doe"
+                        required
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                      />
+                      {field.state.meta.errors.map((error, i) => (
+                        <p key={i} className="text-sm text-red-500 mt-1">
+                          {error?.message}
+                        </p>
+                      ))}
+                    </Field>
+                  )}
+                </form.Field>
                 <form.Field name="email">
                   {(field) => (
                     <Field>
@@ -70,6 +104,10 @@ export function LoginForm() {
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
                       />
+                      <FieldDescription>
+                        We&apos;ll use this to contact you. We will not share your email with anyone
+                        else.
+                      </FieldDescription>
                       {field.state.meta.errors.map((error, i) => (
                         <p key={i} className="text-sm text-red-500 mt-1">
                           {error?.message}
@@ -90,6 +128,28 @@ export function LoginForm() {
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
                       />
+                      <FieldDescription>Must be at least 8 characters long.</FieldDescription>
+                      {field.state.meta.errors.map((error, i) => (
+                        <p key={i} className="text-sm text-red-500 mt-1">
+                          {error?.message}
+                        </p>
+                      ))}
+                    </Field>
+                  )}
+                </form.Field>
+                <form.Field name="confirmPassword">
+                  {(field) => (
+                    <Field>
+                      <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        required
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={field.handleBlur}
+                      />
+                      <FieldDescription>Please confirm your password.</FieldDescription>
                       {field.state.meta.errors.map((error, i) => (
                         <p key={i} className="text-sm text-red-500 mt-1">
                           {error?.message}
@@ -106,19 +166,19 @@ export function LoginForm() {
                         className="w-full"
                         disabled={!canSubmit || isSubmitting}
                       >
-                        {isSubmitting ? "Logging in..." : "Login"}
+                        {isSubmitting ? "Creating account..." : "Create Account"}
                       </Button>
                     )}
                   </form.Subscribe>
-                  {loginMutation.error && (
+                  {signupMutation.error && (
                     <p className="text-sm text-red-500 mt-2 text-center">
-                      {loginMutation.error.message}
+                      {signupMutation.error.message}
                     </p>
                   )}
                   <p className="text-sm text-center mt-4">
-                    Don&apos;t have an account?{" "}
-                    <Link to="/signup" className="underline">
-                      Sign up
+                    Already have an account?{" "}
+                    <Link to="/login" className="underline">
+                      Sign in
                     </Link>
                   </p>
                 </Field>

@@ -7,6 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Be extremely concise. Sacrifice grammar for the sake of concision.
 - List any unresolved questions at the end, if any
 
+## Pull Requests
+
+- Use PR template at `.github/PULL_REQUEST_TEMPLATE.md`
+- Fill out: Summary, Rationale, Changes, Impact
+
 ## Project Overview
 
 Journal Chatbot is a personal AI-powered journal assistant built with:

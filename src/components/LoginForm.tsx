@@ -4,28 +4,21 @@ import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { signupFn } from "~/routes/signup";
+import { loginFn } from "~/routes/_authed";
 
-const signupSchema = z
-  .object({
-    fullName: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
-    path: ["confirmPassword"],
-  });
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
 
-export function SignupForm() {
+export function LoginForm() {
   const router = useRouter();
 
-  const signupMutation = useMutation({
-    mutationFn: async (data: { fullName: string; email: string; password: string }) => {
-      const result = await signupFn({ data });
+  const loginMutation = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      const result = await loginFn({ data });
       if (result?.error) {
         throw new Error(result.message);
       }
@@ -37,20 +30,14 @@ export function SignupForm() {
 
   const form = useForm({
     defaultValues: {
-      fullName: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
     validators: {
-      onChange: signupSchema,
+      onBlur: loginSchema,
     },
     onSubmit: async ({ value }) => {
-      await signupMutation.mutateAsync({
-        fullName: value.fullName,
-        email: value.email,
-        password: value.password,
-      });
+      await loginMutation.mutateAsync(value);
     },
   });
 
@@ -59,8 +46,8 @@ export function SignupForm() {
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Create an account</CardTitle>
-            <CardDescription>Enter your information below to create your account</CardDescription>
+            <CardTitle className="text-2xl">Login to your account</CardTitle>
+            <CardDescription>Enter your email below to login to your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -70,27 +57,6 @@ export function SignupForm() {
               }}
             >
               <FieldGroup>
-                <form.Field name="fullName">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor="fullName">Full Name</FieldLabel>
-                      <Input
-                        id="fullName"
-                        type="text"
-                        placeholder="John Doe"
-                        required
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                      />
-                      {field.state.meta.errors.map((error, i) => (
-                        <p key={i} className="text-sm text-red-500 mt-1">
-                          {error?.message}
-                        </p>
-                      ))}
-                    </Field>
-                  )}
-                </form.Field>
                 <form.Field name="email">
                   {(field) => (
                     <Field>
@@ -104,10 +70,6 @@ export function SignupForm() {
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
                       />
-                      <FieldDescription>
-                        We&apos;ll use this to contact you. We will not share your email with anyone
-                        else.
-                      </FieldDescription>
                       {field.state.meta.errors.map((error, i) => (
                         <p key={i} className="text-sm text-red-500 mt-1">
                           {error?.message}
@@ -128,28 +90,6 @@ export function SignupForm() {
                         onChange={(e) => field.handleChange(e.target.value)}
                         onBlur={field.handleBlur}
                       />
-                      <FieldDescription>Must be at least 8 characters long.</FieldDescription>
-                      {field.state.meta.errors.map((error, i) => (
-                        <p key={i} className="text-sm text-red-500 mt-1">
-                          {error?.message}
-                        </p>
-                      ))}
-                    </Field>
-                  )}
-                </form.Field>
-                <form.Field name="confirmPassword">
-                  {(field) => (
-                    <Field>
-                      <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        required
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                      />
-                      <FieldDescription>Please confirm your password.</FieldDescription>
                       {field.state.meta.errors.map((error, i) => (
                         <p key={i} className="text-sm text-red-500 mt-1">
                           {error?.message}
@@ -166,19 +106,19 @@ export function SignupForm() {
                         className="w-full"
                         disabled={!canSubmit || isSubmitting}
                       >
-                        {isSubmitting ? "Creating account..." : "Create Account"}
+                        {isSubmitting ? "Logging in..." : "Login"}
                       </Button>
                     )}
                   </form.Subscribe>
-                  {signupMutation.error && (
+                  {loginMutation.error && (
                     <p className="text-sm text-red-500 mt-2 text-center">
-                      {signupMutation.error.message}
+                      {loginMutation.error.message}
                     </p>
                   )}
                   <p className="text-sm text-center mt-4">
-                    Already have an account?{" "}
-                    <Link to="/login" className="underline">
-                      Sign in
+                    Don&apos;t have an account?{" "}
+                    <Link to="/signup" className="underline">
+                      Sign up
                     </Link>
                   </p>
                 </Field>

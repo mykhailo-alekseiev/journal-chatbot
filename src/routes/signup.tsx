@@ -1,6 +1,6 @@
 import { redirect, createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { SignupForm } from "../components/signup-form";
+import { SignupForm } from "../components/SignupForm";
 import { getSupabaseServerClient } from "../utils/supabase";
 
 export const signupFn = createServerFn({ method: "POST" })
