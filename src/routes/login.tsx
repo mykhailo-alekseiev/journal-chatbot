@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Login } from "../components/Login";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { LoginForm } from "../components/LoginForm";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: ({ context }) => {
+    if (context.user) {
+      throw redirect({ to: "/chat" });
+    }
+  },
   component: LoginComp,
 });
 
 function LoginComp() {
-  return <Login />;
+  return <LoginForm />;
 }

@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication Style
+
+- Be extremely concise. Sacrifice grammar for the sake of concision.
+- List any unresolved questions at the end, if any
+
+## Pull Requests
+
+- Use PR template at `.github/PULL_REQUEST_TEMPLATE.md`
+- Fill out: Summary, Rationale, Changes, Impact
+
 ## Project Overview
 
 Journal Chatbot is a personal AI-powered journal assistant built with:
@@ -98,10 +108,12 @@ bunx shadcn@latest add <component-name>
 **Environment Variables** (`.env` for local, Cloudflare dashboard for production):
 
 Required:
+
 - `SUPABASE_URL` - Your Supabase project URL
 - `SUPABASE_ANON_KEY` - Your Supabase anonymous/public API key
 
 Optional:
+
 - `AI_GATEWAY_API_KEY` - API key for AI gateway (if used)
 
 ### Error Handling
