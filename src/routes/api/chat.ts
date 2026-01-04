@@ -1,44 +1,45 @@
-import { streamText, UIMessage, convertToModelMessages, tool, stepCountIs } from "ai";
+import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
+import { getSupabaseServerClient } from "~/utils/supabase";
+import { JOURNAL_SYSTEM_PROMPT, createJournalTools } from "~/features/journal";
 
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const supabase = getSupabaseServerClient();
+
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
+        if (authError || !user) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+
         const { messages }: { messages: UIMessage[] } = await request.json();
+
+        // Load recent entries for context
+        const { data: recentEntries } = await supabase
+          .from("journal_entries")
+          .select("summary, entry_date")
+          .eq("user_id", user.id)
+          .gte(
+            "entry_date",
+            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+          )
+          .order("entry_date", { ascending: false })
+          .limit(10);
+
+        const today = new Date().toISOString().split("T")[0];
+        const contextMessage = `\n\n[Context: Today's date is ${today}.${recentEntries?.length ? ` User's recent journal summaries: ${recentEntries.map((e) => `${e.entry_date}: ${e.summary}`).join("; ")}` : ""}]`;
 
         const result = streamText({
           model: "zai/glm-4.7",
+          system: JOURNAL_SYSTEM_PROMPT + contextMessage,
           messages: convertToModelMessages(messages),
           stopWhen: stepCountIs(5),
-          tools: {
-            weather: tool({
-              description: "Get the weather in a location (fahrenheit)",
-              inputSchema: z.object({
-                location: z.string().describe("The location to get the weather for"),
-              }),
-              execute: async ({ location }) => {
-                const temperature = Math.round(Math.random() * (90 - 32) + 32);
-                return {
-                  location,
-                  temperature,
-                };
-              },
-            }),
-            convertFahrenheitToCelsius: tool({
-              description: "Convert a temperature in fahrenheit to celsius",
-              inputSchema: z.object({
-                temperature: z.number().describe("The temperature in fahrenheit to convert"),
-              }),
-              execute: async ({ temperature }) => {
-                const celsius = Math.round((temperature - 32) * (5 / 9));
-                return {
-                  celsius,
-                };
-              },
-            }),
-          },
+          tools: createJournalTools(supabase, user.id),
         });
 
         return result.toUIMessageStreamResponse();

@@ -5,6 +5,8 @@ import { z } from "zod";
 import { LogOut } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { isToolUIPart } from "ai";
+import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -19,12 +21,8 @@ function Chat() {
   const router = useRouter();
 
   const form = useForm({
-    defaultValues: {
-      message: "",
-    },
-    validators: {
-      onChange: messageSchema,
-    },
+    defaultValues: { message: "" },
+    validators: { onChange: messageSchema },
     onSubmit: async ({ value }) => {
       sendMessage({ text: value.message });
       form.reset();
@@ -44,10 +42,9 @@ function Chat() {
         </div>
       </header>
 
-      {/* Messages - scrollable, takes remaining space */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
-          // Welcome state
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="max-w-md space-y-3">
               <h2 className="text-2xl font-semibold">Welcome to Journal Chatbot</h2>
@@ -58,11 +55,9 @@ function Chat() {
             </div>
           </div>
         ) : (
-          // Messages list
           <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
             {messages.map((message) => (
               <div key={message.id}>
-                {/* Message bubble */}
                 <div
                   className={cn(
                     "rounded-lg px-4 py-3 max-w-prose",
@@ -79,6 +74,9 @@ function Chat() {
                         </div>
                       );
                     }
+                    if (isToolUIPart(part)) {
+                      return <ToolInvocationDisplay key={i} part={part} />;
+                    }
                     return null;
                   })}
                 </div>
@@ -88,7 +86,7 @@ function Chat() {
         )}
       </div>
 
-      {/* Input - fixed at bottom */}
+      {/* Input */}
       <div className="border-t border-border bg-card">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <form
