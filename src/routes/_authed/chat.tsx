@@ -1,14 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
 import { useChat } from "@ai-sdk/react";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
 });
 
+const messageSchema = z.object({
+  message: z.string().min(1, "Message cannot be empty"),
+});
+
 function Chat() {
-  const [input, setInput] = useState("");
   const { messages, sendMessage } = useChat();
+
+  const form = useForm({
+    defaultValues: {
+      message: "",
+    },
+    validators: {
+      onChange: messageSchema,
+    },
+    onSubmit: async ({ value }) => {
+      sendMessage({ text: value.message });
+      form.reset();
+    },
+  });
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
@@ -30,15 +47,20 @@ function Chat() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          sendMessage({ text: input });
-          setInput("");
+          form.handleSubmit();
         }}
       >
-        <input
-          className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
-          value={input}
-          placeholder="Say something..."
-          onChange={(e) => setInput(e.currentTarget.value)}
+        <form.Field
+          name="message"
+          children={(field) => (
+            <input
+              className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
+              value={field.state.value}
+              placeholder="Say something..."
+              onChange={(e) => field.handleChange(e.currentTarget.value)}
+              onBlur={field.handleBlur}
+            />
+          )}
         />
       </form>
     </div>
