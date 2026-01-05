@@ -1,36 +1,96 @@
-# TanStack Start - Basic Example
+# Journal Chatbot
 
-This is the basic TanStack Start example, demonstrating the fundamentals of building applications with TanStack Router and TanStack Start.
+AI-powered personal journal assistant with streaming chat interface and tool visualization.
 
-- [TanStack Router Docs](https://tanstack.com/router)
+## Tech Stack
 
-It's deployed automagically with Netlify!
-
-- [Netlify](https://netlify.com/)
-
-## Start a new project based on this example
-
-To start a new project based on this example, run:
-
-```sh
-npx gitpick TanStack/router/tree/main/examples/react/start-basic start-basic
-```
+- **TanStack Start** - Full-stack React framework with file-based routing
+- **Vercel AI SDK** - Chat interface with streaming responses
+- **Supabase** - Authentication and authorization (SSR-compatible)
+- **TanStack Query** - Server state management
+- **Cloudflare Workers** - Deployment target
+- **Tailwind CSS v4** - Styling
+- **shadcn/ui** - UI components (base-vega style)
 
 ## Getting Started
 
-From your terminal:
+```bash
+# Install dependencies
+bun install
 
-```sh
-bun run install
+# Set up environment variables
+cp .env.example .env
+# Add your SUPABASE_URL and SUPABASE_ANON_KEY
+
+# Run development server
 bun run dev
 ```
 
-This starts your app in development mode, rebuilding assets on file changes.
+App runs on http://localhost:3000
 
-## Build
+## Development
 
-To build the app for production:
+```bash
+# Linting & formatting
+bun run lint          # Check for issues
+bun run lint:fix      # Auto-fix issues
+bun run format        # Format code
 
-```sh
-bun run build
+# Type generation
+bun run db:types      # Generate Supabase types (requires SUPABASE_PROJECT_ID)
+bun run cf-typegen    # Generate Cloudflare types
+
+# Add UI components
+bunx shadcn@latest add <component-name>
 ```
+
+## Build & Deploy
+
+```bash
+# Production build
+bun run build
+
+# Preview production build
+bun run preview
+
+# Deploy to Cloudflare Workers
+bun run deploy
+```
+
+## Environment Variables
+
+**Required:**
+
+- `SUPABASE_URL` - Supabase project URL
+- `SUPABASE_ANON_KEY` - Supabase anonymous API key
+
+**Optional:**
+
+- `SUPABASE_PROJECT_ID` - For type generation
+- `AI_GATEWAY_API_KEY` - For AI gateway integration
+
+## Project Structure
+
+```
+src/
+├── routes/           # File-based routing
+│   ├── _authed/      # Protected routes (require auth)
+│   └── api/          # API endpoints
+├── components/       # Reusable components
+│   ├── ui/           # shadcn/ui components
+│   └── chat/         # Chat-specific components
+├── features/         # Domain-specific modules
+│   └── journal/      # Journal assistant logic
+├── lib/              # Shared utilities
+└── utils/            # App-specific utilities
+```
+
+## Authentication
+
+- SSR-compatible Supabase auth with cookie-based sessions
+- Protected routes under `_authed/` directory
+- Auto-redirects to `/login` for unauthenticated users
+
+## License
+
+MIT
