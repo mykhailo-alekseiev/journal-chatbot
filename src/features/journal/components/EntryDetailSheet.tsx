@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useEntry } from "../api";
 import { getMoodConfig } from "../types";
 import { formatDate } from "~/lib/date";
@@ -13,6 +14,7 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
+import { EntryDeleteDialog } from "./EntryDeleteDialog";
 
 interface EntryDetailSheetProps {
   entryId: string | null;
@@ -20,6 +22,7 @@ interface EntryDetailSheetProps {
 }
 
 export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { data: entry, isLoading } = useEntry({
     id: entryId || "",
     queryConfig: {
@@ -78,7 +81,11 @@ export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
                 <Pencil className="size-4" />
                 Edit
               </Button>
-              <Button variant="outline" className="gap-2 w-full text-destructive">
+              <Button
+                variant="outline"
+                className="gap-2 w-full text-destructive"
+                onClick={() => setShowDeleteDialog(true)}
+              >
                 <Trash2 className="size-4" />
                 Delete
               </Button>
@@ -89,6 +96,12 @@ export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
           </>
         )}
       </SheetContent>
+
+      <EntryDeleteDialog
+        entryId={entryId}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      />
     </Sheet>
   );
 }

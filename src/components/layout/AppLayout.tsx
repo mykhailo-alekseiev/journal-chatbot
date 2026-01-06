@@ -1,26 +1,22 @@
-import { Outlet, useRouter, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { Outlet, useRouterState } from "@tanstack/react-router";
 import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "~/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { Separator } from "~/components/ui/separator";
-import { useIsMobile } from "~/hooks/use-mobile";
+import { useEffect } from "react";
 
 function AppLayoutContent() {
-  const router = useRouter();
-  const { setOpen } = useSidebar();
-  const isMobile = useIsMobile();
-  const routerState = useRouterState();
+  const router = useRouterState();
+  const { setOpenMobile, isMobile, state } = useSidebar();
 
-  // Close sidebar on mobile after navigation
   useEffect(() => {
-    if (isMobile) {
-      setOpen(false);
-    }
-  }, [routerState.location.pathname, isMobile, setOpen]);
+    if (!isMobile || state === "collapsed") return;
+
+    setOpenMobile(false);
+  }, [router.location.pathname, isMobile, setOpenMobile, state]);
 
   return (
     <>
-      <AppSidebar onLogout={() => router.navigate({ to: "/logout" })} />
+      <AppSidebar />
       <SidebarInset>
         <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-4">
           <SidebarTrigger />

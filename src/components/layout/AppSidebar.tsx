@@ -1,4 +1,4 @@
-import { Link, useMatchRoute } from "@tanstack/react-router";
+import { Link, useMatchRoute, useRouter } from "@tanstack/react-router";
 import { BookOpen, MessageSquare, LogOut } from "lucide-react";
 import {
   Sidebar,
@@ -18,12 +18,9 @@ const navItems = [
   { to: "/entries", icon: BookOpen, label: "Entries" },
 ] as const;
 
-interface AppSidebarProps {
-  onLogout: () => void;
-}
-
-export function AppSidebar({ onLogout }: AppSidebarProps) {
+export function AppSidebar() {
   const matchRoute = useMatchRoute();
+  const router = useRouter();
 
   return (
     <Sidebar>
@@ -66,7 +63,12 @@ export function AppSidebar({ onLogout }: AppSidebarProps) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={onLogout} className="cursor-pointer">
+            <SidebarMenuButton
+              onClick={() => {
+                router.navigate({ to: "/logout" });
+              }}
+              className="cursor-pointer"
+            >
               <LogOut className="size-4" />
               <span>Logout</span>
             </SidebarMenuButton>
