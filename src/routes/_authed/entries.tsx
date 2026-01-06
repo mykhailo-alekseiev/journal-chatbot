@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useEntries } from "~/features/journal/api";
 import { getMoodConfig } from "~/features/journal/types";
 import { formatDate } from "~/lib/date";
+import { stripMarkdown } from "~/lib/utils";
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { EntryDetailSheet } from "~/features/journal/components/EntryDetailSheet";
@@ -86,7 +87,7 @@ function Entries() {
 
                   {/* Content preview */}
                   <div className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                    {entry.content}
+                    {stripMarkdown(entry.content)}
                   </div>
 
                   {/* Tags */}

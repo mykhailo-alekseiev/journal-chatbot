@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Markdown from "react-markdown";
 import { useEntry } from "../api";
 import { getMoodConfig } from "../types";
 import { formatDate, formatTimestamp } from "~/lib/date";
@@ -62,7 +63,7 @@ export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
               {/* Content */}
               <div className="grid gap-3">
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <p className="whitespace-pre-wrap">{entry.content}</p>
+                  <Markdown>{entry.content}</Markdown>
                 </div>
               </div>
 
@@ -96,6 +97,10 @@ export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
       <EntryDeleteDialog
         entryId={entryId}
         open={showDeleteDialog}
+        onSuccess={() => {
+          setShowDeleteDialog(false);
+          onClose();
+        }}
         onOpenChange={setShowDeleteDialog}
       />
     </Sheet>
