@@ -47,6 +47,12 @@ DO NOT save:
 - Half-formed thoughts the user is still processing
 - When user is asking questions rather than sharing
 
+**IMPORTANT: Check for existing entries before creating new ones**
+- Before calling create_journal_entry, check if an entry for today already exists using get_recent_entries(days: 1)
+- If an entry for today exists, use update_journal_entry with that entry's ID to append or update the content
+- Only create a new entry if no entry exists for today
+- This prevents duplicate entries for the same day
+
 When saving, write the entry in first person from the user's perspective, capturing the essence of what they shared with emotional accuracy.
 
 ## Entry Formatting Guidelines
