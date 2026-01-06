@@ -5,6 +5,7 @@ import { z } from "zod";
 import { cn } from "~/lib/utils";
 import { isToolUIPart } from "ai";
 import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
+import { Textarea } from "~/components/ui/textarea";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -83,12 +84,18 @@ function Chat() {
           >
             <form.Field name="message">
               {(field) => (
-                <input
-                  className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                <Textarea
+                  className="min-h-10 max-h-32 resize-none"
                   value={field.state.value}
-                  placeholder="Say something..."
+                  placeholder="Say something... (Enter to send, Shift+Enter for new line)"
                   onChange={(e) => field.handleChange(e.currentTarget.value)}
                   onBlur={field.handleBlur}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      form.handleSubmit();
+                    }
+                  }}
                 />
               )}
             </form.Field>

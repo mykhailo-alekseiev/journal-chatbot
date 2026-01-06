@@ -6,18 +6,18 @@ export type JournalEntry = Tables["journal_entries"]["Row"];
 export type JournalEntryInsert = Tables["journal_entries"]["Insert"];
 export type JournalEntryUpdate = Tables["journal_entries"]["Update"];
 
-// Mood scale (1-5 integers in DB, emojis in UI)
-export type MoodValue = 1 | 2 | 3 | 4 | 5;
+// Mood from DB enum
+export type MoodLevel = Database["public"]["Enums"]["mood_level"];
 
 export const MOOD_SCALE = {
-  1: { emoji: "😢", label: "Very Sad" },
-  2: { emoji: "😕", label: "Sad" },
-  3: { emoji: "😐", label: "Neutral" },
-  4: { emoji: "🙂", label: "Happy" },
-  5: { emoji: "😄", label: "Very Happy" },
+  very_sad: { emoji: "😢", label: "Very Sad" },
+  sad: { emoji: "😕", label: "Sad" },
+  neutral: { emoji: "😐", label: "Neutral" },
+  happy: { emoji: "🙂", label: "Happy" },
+  very_happy: { emoji: "😄", label: "Very Happy" },
 } as const;
 
-export function getMoodConfig(mood: MoodValue) {
+export function getMoodConfig(mood: MoodLevel) {
   return MOOD_SCALE[mood];
 }
 

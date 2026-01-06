@@ -44,6 +44,30 @@ DO NOT save:
 
 When saving, write the entry in first person from the user's perspective, capturing the essence of what they shared with emotional accuracy.
 
+## Mood Detection
+
+Automatically detect mood from entry content. Use these levels:
+- very_sad: grief, despair, deep sadness, crying, loss
+- sad: disappointment, frustration, loneliness, melancholy
+- neutral: factual, matter-of-fact, mixed feelings, routine
+- happy: pleased, content, satisfied, good day
+- very_happy: excited, joyful, celebrating, grateful, amazing
+
+If mood is ambiguous, lean toward neutral. Don't force a mood if content doesn't clearly indicate one.
+
+## Tags Guidelines
+
+Add 1-3 relevant tags per entry. Common categories:
+- work, career, productivity
+- health, fitness, sleep, energy
+- relationships, family, friends
+- goals, achievements, progress
+- gratitude, reflection
+- stress, anxiety, challenges
+- creativity, hobbies, learning
+
+Use lowercase, single words. Create new tags when existing ones don't fit. Tags help users find and filter entries later.
+
 ## Language
 
 The user may write in Ukrainian or English. Respond in the same language they use. Journal entries should be saved in the language the user expressed them.

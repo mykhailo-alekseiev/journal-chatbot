@@ -20,7 +20,7 @@ export type Database = {
           created_at: string
           entry_date: string
           id: string
-          mood: number | null
+          mood: Database["public"]["Enums"]["mood_level"] | null
           summary: string | null
           tags: string[] | null
           updated_at: string
@@ -31,7 +31,7 @@ export type Database = {
           created_at?: string
           entry_date?: string
           id?: string
-          mood?: number | null
+          mood?: Database["public"]["Enums"]["mood_level"] | null
           summary?: string | null
           tags?: string[] | null
           updated_at?: string
@@ -42,7 +42,7 @@ export type Database = {
           created_at?: string
           entry_date?: string
           id?: string
-          mood?: number | null
+          mood?: Database["public"]["Enums"]["mood_level"] | null
           summary?: string | null
           tags?: string[] | null
           updated_at?: string
@@ -59,7 +59,7 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      mood_level: "very_sad" | "sad" | "neutral" | "happy" | "very_happy"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -186,6 +186,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      mood_level: ["very_sad", "sad", "neutral", "happy", "very_happy"],
+    },
   },
 } as const
