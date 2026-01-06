@@ -4,7 +4,6 @@ import { getMoodConfig } from "../types";
 import { formatDate, formatTimestamp } from "~/lib/date";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -76,22 +75,19 @@ export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
               </div>
             </div>
 
-            <SheetFooter className="flex-col gap-2">
-              <Button variant="outline" className="gap-2 w-full">
+            <SheetFooter className="flex-row gap-2">
+              <Button variant="outline" className="gap-2 flex-1">
                 <Pencil className="size-4" />
                 Edit
               </Button>
               <Button
                 variant="outline"
-                className="gap-2 w-full text-destructive"
+                className="gap-2 flex-1 text-destructive"
                 onClick={() => setShowDeleteDialog(true)}
               >
                 <Trash2 className="size-4" />
                 Delete
               </Button>
-              <SheetClose render={<Button variant="outline" className="w-full" />}>
-                Close
-              </SheetClose>
             </SheetFooter>
           </>
         )}
