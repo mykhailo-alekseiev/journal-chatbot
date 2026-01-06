@@ -17,7 +17,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { EntryDeleteDialog } from "./EntryDeleteDialog";
 
 interface EntryDetailSheetProps {
-  entryId: string | null;
+  entryId: string | undefined;
   onClose: () => void;
 }
 

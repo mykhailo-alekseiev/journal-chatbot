@@ -11,7 +11,7 @@ import {
 } from "~/components/ui/alert-dialog";
 
 interface EntryDeleteDialogProps {
-  entryId: string | null;
+  entryId: string | undefined;
   open: boolean;
   onOpenChange: (state: boolean) => void;
 }
@@ -38,7 +38,7 @@ export function EntryDeleteDialog({ entryId, open, onOpenChange }: EntryDeleteDi
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
-            onClick={() => entryId && deleteMutation.mutate({ id: entryId })}
+            onClick={() => entryId && deleteMutation.mutate({ data: entryId })}
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? "Deleting..." : "Delete"}
