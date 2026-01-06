@@ -6,6 +6,21 @@ export type JournalEntry = Tables["journal_entries"]["Row"];
 export type JournalEntryInsert = Tables["journal_entries"]["Insert"];
 export type JournalEntryUpdate = Tables["journal_entries"]["Update"];
 
+// Mood scale (1-5 integers in DB, emojis in UI)
+export type MoodValue = 1 | 2 | 3 | 4 | 5;
+
+export const MOOD_SCALE = {
+  1: { emoji: "😢", label: "Very Sad" },
+  2: { emoji: "😕", label: "Sad" },
+  3: { emoji: "😐", label: "Neutral" },
+  4: { emoji: "🙂", label: "Happy" },
+  5: { emoji: "😄", label: "Very Happy" },
+} as const;
+
+export function getMoodConfig(mood: MoodValue) {
+  return MOOD_SCALE[mood];
+}
+
 // Computed stats - not in DB
 export interface EntryStats {
   total_entries: number;
@@ -25,14 +40,18 @@ export interface SaveEntryResult {
 
 export interface RecentEntriesResult {
   success: boolean;
-  entries?: Array<Pick<JournalEntry, "id" | "summary" | "entry_date" | "created_at">>;
+  entries?: Array<
+    Pick<JournalEntry, "id" | "summary" | "entry_date" | "created_at" | "mood" | "tags">
+  >;
   count?: number;
   error?: string;
 }
 
 export interface SearchResult {
   success: boolean;
-  entries?: Array<Pick<JournalEntry, "id" | "summary" | "entry_date" | "content">>;
+  entries?: Array<
+    Pick<JournalEntry, "id" | "summary" | "entry_date" | "content" | "mood" | "tags">
+  >;
   count?: number;
   error?: string;
 }
