@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useEntry } from "../api";
 import { getMoodConfig } from "../types";
-import { formatDate } from "~/lib/date";
+import { formatDate, formatTimestamp } from "~/lib/date";
 import {
   Sheet,
   SheetClose,
@@ -70,8 +70,8 @@ export function EntryDetailSheet({ entryId, onClose }: EntryDetailSheetProps) {
               {/* Metadata */}
               <div className="grid gap-3">
                 <div className="text-xs text-muted-foreground space-y-1 pt-4 border-t">
-                  <div>Created: {new Date(entry.created_at).toLocaleString()}</div>
-                  <div>Updated: {new Date(entry.updated_at).toLocaleString()}</div>
+                  <div>Created: {formatTimestamp(entry.created_at)}</div>
+                  <div>Updated: {formatTimestamp(entry.updated_at)}</div>
                 </div>
               </div>
             </div>

@@ -92,10 +92,25 @@ bunx shadcn@latest add <component-name>
 - `src/components/ui/` - shadcn/ui components
 - `src/components/chat/` - Chat-specific components (ToolInvocationDisplay)
 - `src/lib/` - Shared utilities and types
+- `src/lib/date.ts` - Date utilities using dayjs (YYYY-MM-DD format, today(), daysAgo(), formatDate(), nowISO(), calculateStreak())
 - `src/features/` - Domain-specific modules
 - `src/features/journal/` - Journal assistant (types, tools, prompts, config)
 - `src/utils/` - App-specific utilities (Supabase client, SEO, logging)
 - `src/styles/` - Global CSS and Tailwind configuration
+
+### Date Handling
+
+- Use **dayjs** for all date operations
+- Date utilities in `src/lib/date.ts`:
+  - `today()` - Get today's date in YYYY-MM-DD format (for database)
+  - `daysAgo(n)` - Get date N days ago in YYYY-MM-DD format (for database)
+  - `formatDate(date)` - Format date for display as "MMM DD, YYYY"
+  - `formatTimestamp(timestamp)` - Format timestamp for display as "MMM DD, YYYY"
+  - `nowISO()` - Get current timestamp as ISO string
+  - `calculateStreak(dates)` - Calculate consecutive day streak
+  - `getDateSet(entries)` - Extract unique dates from entries
+  - `isSameDay(date1, date2)` - Check if two dates are the same day
+- **Always use these utilities** instead of `new Date().toISOString()`, `new Date().toLocaleString()`, etc.
 
 ### Configuration
 

@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedRouteImport } from './routes/_authed'
@@ -18,11 +17,6 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthedEntriesRouteImport } from './routes/_authed/entries'
 import { Route as AuthedChatRouteImport } from './routes/_authed/chat'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
@@ -62,7 +56,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/signup': typeof SignupRoute
   '/chat': typeof AuthedChatRoute
   '/entries': typeof AuthedEntriesRoute
   '/api/chat': typeof ApiChatRoute
@@ -71,7 +64,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/signup': typeof SignupRoute
   '/chat': typeof AuthedChatRoute
   '/entries': typeof AuthedEntriesRoute
   '/api/chat': typeof ApiChatRoute
@@ -82,37 +74,21 @@ export interface FileRoutesById {
   '/_authed': typeof AuthedRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/signup': typeof SignupRoute
   '/_authed/chat': typeof AuthedChatRoute
   '/_authed/entries': typeof AuthedEntriesRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/login'
-    | '/logout'
-    | '/signup'
-    | '/chat'
-    | '/entries'
-    | '/api/chat'
+  fullPaths: '/' | '/login' | '/logout' | '/chat' | '/entries' | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/login'
-    | '/logout'
-    | '/signup'
-    | '/chat'
-    | '/entries'
-    | '/api/chat'
+  to: '/' | '/login' | '/logout' | '/chat' | '/entries' | '/api/chat'
   id:
     | '__root__'
     | '/'
     | '/_authed'
     | '/login'
     | '/logout'
-    | '/signup'
     | '/_authed/chat'
     | '/_authed/entries'
     | '/api/chat'
@@ -123,19 +99,11 @@ export interface RootRouteChildren {
   AuthedRoute: typeof AuthedRouteWithChildren
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
-  SignupRoute: typeof SignupRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/logout': {
       id: '/logout'
       path: '/logout'
@@ -206,7 +174,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthedRoute: AuthedRouteWithChildren,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
-  SignupRoute: SignupRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport

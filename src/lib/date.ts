@@ -17,14 +17,19 @@ export function daysAgo(days: number): string {
   return dayjs().subtract(days, "day").format(DATE_FORMAT);
 }
 
-/** Format a date to YYYY-MM-DD */
+/** Format a date for display (e.g., "Jan 05, 2026") */
 export function formatDate(date: Date | string): string {
-  return dayjs(date).format(DATE_FORMAT);
+  return dayjs(date).format("MMM DD, YYYY");
 }
 
 /** Get current ISO timestamp */
 export function nowISO(): string {
   return dayjs().toISOString();
+}
+
+/** Format a timestamp for display (e.g., "Jan 05, 2026") */
+export function formatTimestamp(timestamp: Date | string): string {
+  return dayjs(timestamp).format("MMM DD, YYYY");
 }
 
 /** Check if two dates are the same day */

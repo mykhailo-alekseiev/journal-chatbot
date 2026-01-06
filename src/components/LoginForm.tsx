@@ -1,4 +1,4 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
@@ -115,12 +115,6 @@ export function LoginForm() {
                       {loginMutation.error.message}
                     </p>
                   )}
-                  <p className="text-sm text-center mt-4">
-                    Don&apos;t have an account?{" "}
-                    <Link to="/signup" className="underline">
-                      Sign up
-                    </Link>
-                  </p>
                 </Field>
               </FieldGroup>
             </form>
