@@ -7,6 +7,7 @@ import { isToolUIPart } from "ai";
 import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
 import { Textarea } from "~/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
+import ReactMarkdown from "react-markdown";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -67,8 +68,8 @@ function Chat() {
                   {message.parts.map((part, i) => {
                     if (part.type === "text") {
                       return (
-                        <div key={i} className="whitespace-pre-wrap wrap-break-word">
-                          {part.text}
+                        <div key={i} className="markdown">
+                          <ReactMarkdown>{part.text}</ReactMarkdown>
                         </div>
                       );
                     }
