@@ -1,9 +1,7 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useChat } from "@ai-sdk/react";
 import { z } from "zod";
-import { LogOut } from "lucide-react";
-import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { isToolUIPart } from "ai";
 import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
@@ -18,7 +16,6 @@ const messageSchema = z.object({
 
 function Chat() {
   const { messages, sendMessage } = useChat();
-  const router = useRouter();
 
   const form = useForm({
     defaultValues: { message: "" },
@@ -30,18 +27,7 @@ function Chat() {
   });
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-semibold">Journal Chatbot</h1>
-          <Button variant="ghost" size="sm" onClick={() => router.navigate({ to: "/logout" })}>
-            <LogOut className="size-4 mr-2" />
-            Logout
-          </Button>
-        </div>
-      </header>
-
+    <div className="flex flex-col h-full">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
