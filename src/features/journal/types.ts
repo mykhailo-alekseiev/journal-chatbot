@@ -61,7 +61,25 @@ export interface StatsResult {
   total_entries?: number;
   streak_days?: number;
   avg_entry_length?: number;
+  unique_tags?: string[];
   period?: string;
+  error?: string;
+}
+
+export interface EntriesByTagResult {
+  success: boolean;
+  entries?: Array<Pick<JournalEntry, "id" | "summary" | "entry_date" | "mood" | "tags">>;
+  count?: number;
+  tag?: string;
+  error?: string;
+}
+
+export interface MoodTrendsResult {
+  success: boolean;
+  entries_with_mood?: number;
+  mood_distribution?: Record<string, number>;
+  trend?: Array<{ date: string; mood: string }>;
+  period_days?: number;
   error?: string;
 }
 
@@ -95,5 +113,18 @@ export function isStatsResult(result: unknown): result is StatsResult {
     result !== null &&
     "success" in result &&
     ("total_entries" in result || "error" in result)
+  );
+}
+
+export function isEntriesByTagResult(result: unknown): result is EntriesByTagResult {
+  return typeof result === "object" && result !== null && "success" in result && "tag" in result;
+}
+
+export function isMoodTrendsResult(result: unknown): result is MoodTrendsResult {
+  return (
+    typeof result === "object" &&
+    result !== null &&
+    "success" in result &&
+    ("mood_distribution" in result || "entries_with_mood" in result)
   );
 }
