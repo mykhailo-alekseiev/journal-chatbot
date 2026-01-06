@@ -14,14 +14,18 @@ interface EntryDeleteDialogProps {
   entryId: string | undefined;
   open: boolean;
   onOpenChange: (state: boolean) => void;
+  onSuccess: () => void;
 }
 
-export function EntryDeleteDialog({ entryId, open, onOpenChange }: EntryDeleteDialogProps) {
+export function EntryDeleteDialog({
+  entryId,
+  open,
+  onOpenChange,
+  onSuccess,
+}: EntryDeleteDialogProps) {
   const deleteMutation = useDeleteEntry({
     mutationConfig: {
-      onSuccess: () => {
-        onOpenChange(false);
-      },
+      onSuccess,
     },
   });
 

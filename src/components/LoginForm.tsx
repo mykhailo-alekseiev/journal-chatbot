@@ -34,7 +34,7 @@ export function LoginForm() {
       password: "",
     },
     validators: {
-      onBlur: loginSchema,
+      onSubmit: loginSchema,
     },
     onSubmit: async ({ value }) => {
       await loginMutation.mutateAsync(value);

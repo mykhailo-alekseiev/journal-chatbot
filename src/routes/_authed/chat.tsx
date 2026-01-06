@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 import { isToolUIPart } from "ai";
 import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
 import { Textarea } from "~/components/ui/textarea";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -16,7 +17,17 @@ const messageSchema = z.object({
 });
 
 function Chat() {
-  const { messages, sendMessage } = useChat();
+  const queryClient = useQueryClient();
+  const { messages, sendMessage } = useChat({
+    onToolCall: ({ toolCall }) => {
+      if (
+        toolCall.toolName === "update_journal_entry" ||
+        toolCall.toolName === "create_journal_entry"
+      ) {
+        queryClient.invalidateQueries({ queryKey: ["journal"] });
+      }
+    },
+  });
 
   const form = useForm({
     defaultValues: { message: "" },
