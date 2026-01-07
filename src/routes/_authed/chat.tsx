@@ -1,25 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useForm } from "@tanstack/react-form";
 import { useChat } from "@ai-sdk/react";
-import { z } from "zod";
 import { cn } from "~/lib/utils";
 import { isToolUIPart } from "ai";
 import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
 import { PromptPresets } from "~/components/chat/PromptPresets";
-import { Textarea } from "~/components/ui/textarea";
+import { ChatInput } from "~/components/chat/ChatInput";
 import { useQueryClient } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
+import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
 });
 
-const messageSchema = z.object({
-  message: z.string().min(1, "Message cannot be empty"),
-});
-
 function Chat() {
   const queryClient = useQueryClient();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const { messages, sendMessage } = useChat({
     onToolCall: ({ toolCall }) => {
       if (
@@ -31,19 +28,15 @@ function Chat() {
     },
   });
 
-  const form = useForm({
-    defaultValues: { message: "" },
-    validators: { onChange: messageSchema },
-    onSubmit: async ({ value }) => {
-      sendMessage({ text: value.message });
-      form.reset();
-    },
-  });
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-[100dvh]">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="max-w-md space-y-3">
@@ -83,39 +76,13 @@ function Chat() {
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </div>
 
       {/* Input */}
-      <div className="border-t border-border bg-card">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit();
-            }}
-          >
-            <form.Field name="message">
-              {(field) => (
-                <Textarea
-                  className="min-h-10 max-h-32 resize-none"
-                  value={field.state.value}
-                  placeholder="Say something... (Enter to send, Shift+Enter for new line)"
-                  onChange={(e) => field.handleChange(e.currentTarget.value)}
-                  onBlur={field.handleBlur}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      form.handleSubmit();
-                    }
-                  }}
-                />
-              )}
-            </form.Field>
-          </form>
-        </div>
-      </div>
+      <ChatInput onSend={(message) => sendMessage({ text: message })} />
     </div>
   );
 }
