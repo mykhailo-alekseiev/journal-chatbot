@@ -5,6 +5,7 @@ import { z } from "zod";
 import { cn } from "~/lib/utils";
 import { isToolUIPart } from "ai";
 import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
+import { PromptPresets } from "~/components/chat/PromptPresets";
 import { Textarea } from "~/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
@@ -51,6 +52,7 @@ function Chat() {
                 Start a conversation with your AI-powered journal assistant. Share your thoughts,
                 reflect on your day, or explore ideas.
               </p>
+              <PromptPresets onSelect={(message) => sendMessage({ text: message })} />
             </div>
           </div>
         ) : (
