@@ -36,7 +36,7 @@ function Chat() {
   return (
     <div className="flex flex-col h-[100dvh]">
       {/* Messages */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto">
+      <div  className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="max-w-md space-y-3">
