@@ -3,27 +3,11 @@ import { z } from "zod";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Send } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useIsMobile } from "~/hooks/use-mobile";
 
 const messageSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
 });
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  return isMobile;
-}
 
 interface ChatInputProps {
   onSend: (message: string) => void;
