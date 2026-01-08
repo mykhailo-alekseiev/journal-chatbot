@@ -34,7 +34,7 @@ function Chat() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[100dvh]">
+    <div className="flex flex-col h-full">
       {/* Messages */}
       <div  className="flex-1 overflow-y-auto">
         {messages.length === 0 ? (
