@@ -34,9 +34,9 @@ function Chat() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="grid grid-rows-[1fr_auto] h-full overflow-hidden">
       {/* Messages */}
-      <div  className="flex-1 overflow-y-auto">
+      <div className="overflow-y-auto">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="max-w-md space-y-3">
