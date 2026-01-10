@@ -1,0 +1,13 @@
+@reference "../../styles/app.css";
+
+.container {
+  @apply min-w-0 flex-1 p-4 flex flex-col items-center justify-center gap-6;
+}
+
+.actions {
+  @apply flex gap-2 items-center flex-wrap;
+}
+
+.actionButton {
+  @apply px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded-sm text-white uppercase font-extrabold;
+}

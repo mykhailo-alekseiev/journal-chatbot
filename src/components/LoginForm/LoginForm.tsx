@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Field, FieldGroup, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import { loginFn } from "~/routes/_authed";
+import styles from "./LoginForm.module.css";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -42,11 +43,11 @@ export function LoginForm() {
   });
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+    <div className={styles.page}>
+      <div className={styles.cardContainer}>
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl">Login to your account</CardTitle>
+            <CardTitle className={styles.cardTitle}>Login to your account</CardTitle>
             <CardDescription>Enter your email below to login to your account</CardDescription>
           </CardHeader>
           <CardContent>
@@ -71,7 +72,7 @@ export function LoginForm() {
                         onBlur={field.handleBlur}
                       />
                       {field.state.meta.errors.map((error, i) => (
-                        <p key={i} className="text-sm text-red-500 mt-1">
+                        <p key={i} className={styles.fieldError}>
                           {error?.message}
                         </p>
                       ))}
@@ -91,7 +92,7 @@ export function LoginForm() {
                         onBlur={field.handleBlur}
                       />
                       {field.state.meta.errors.map((error, i) => (
-                        <p key={i} className="text-sm text-red-500 mt-1">
+                        <p key={i} className={styles.fieldError}>
                           {error?.message}
                         </p>
                       ))}
@@ -103,7 +104,7 @@ export function LoginForm() {
                     {([canSubmit, isSubmitting]) => (
                       <Button
                         type="submit"
-                        className="w-full"
+                        className={styles.submitButton}
                         disabled={!canSubmit || isSubmitting}
                       >
                         {isSubmitting ? "Logging in..." : "Login"}
@@ -111,7 +112,7 @@ export function LoginForm() {
                     )}
                   </form.Subscribe>
                   {loginMutation.error && (
-                    <p className="text-sm text-red-500 mt-2 text-center">
+                    <p className={styles.formError}>
                       {loginMutation.error.message}
                     </p>
                   )}

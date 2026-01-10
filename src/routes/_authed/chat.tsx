@@ -8,6 +8,7 @@ import { ChatInput } from "~/components/chat/ChatInput";
 import { useQueryClient } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import { useEffect, useRef } from "react";
+import styles from "./chat.module.css";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -34,14 +35,14 @@ function Chat() {
   }, [messages]);
 
   return (
-    <div className="grid grid-rows-[1fr_auto] h-full overflow-hidden">
+    <div className={styles.container}>
       {/* Messages */}
-      <div className="overflow-y-auto">
+      <div className={styles.messagesScroll}>
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4">
-            <div className="max-w-md space-y-3">
-              <h2 className="text-2xl font-semibold">Welcome to Journal Chatbot</h2>
-              <p className="text-muted-foreground">
+          <div className={styles.emptyState}>
+            <div className={styles.emptyContent}>
+              <h2 className={styles.emptyTitle}>Welcome to Journal Chatbot</h2>
+              <p className={styles.emptyDescription}>
                 Start a conversation with your AI-powered journal assistant. Share your thoughts,
                 reflect on your day, or explore ideas.
               </p>
@@ -49,15 +50,15 @@ function Chat() {
             </div>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto px-4 py-6 space-y-4">
+          <div className={styles.messagesContainer}>
             {messages.map((message) => (
               <div key={message.id}>
                 <div
                   className={cn(
-                    "rounded-lg px-4 py-3 max-w-prose",
+                    styles.messageBubble,
                     message.role === "user"
-                      ? "bg-primary text-primary-foreground ml-auto"
-                      : "bg-muted text-foreground",
+                      ? styles.userMessage
+                      : styles.assistantMessage,
                   )}
                 >
                   {message.parts.map((part, i) => {

@@ -1,0 +1,73 @@
+@reference "../../../styles/app.css";
+
+.statusRow {
+  @apply flex items-center gap-2 text-sm py-2;
+}
+
+.icon {
+  @apply size-4;
+}
+
+.spinningIcon {
+  @apply size-4 animate-spin;
+}
+
+.loadingText {
+  @apply text-muted-foreground;
+}
+
+.errorText {
+  @apply text-red-500;
+}
+
+.successText {
+  @apply text-green-600 dark:text-green-400;
+}
+
+.updateText {
+  @apply text-yellow-600 dark:text-yellow-400;
+}
+
+.resultContainer {
+  @apply text-sm py-2 space-y-1;
+}
+
+.resultCard {
+  @apply text-sm py-2 rounded-lg bg-muted/50 px-3;
+}
+
+.resultHeader {
+  @apply flex items-center gap-2 text-muted-foreground;
+}
+
+.resultHeaderWithMargin {
+  @apply flex items-center gap-2 text-muted-foreground mb-2;
+}
+
+.statsGrid {
+  @apply grid grid-cols-3 gap-2 text-center;
+}
+
+.statValue {
+  @apply text-lg font-semibold;
+}
+
+.statLabel {
+  @apply text-xs text-muted-foreground;
+}
+
+.moodDistribution {
+  @apply flex items-center gap-3 flex-wrap;
+}
+
+.moodItem {
+  @apply flex items-center gap-1;
+}
+
+.moodPercent {
+  @apply text-xs text-muted-foreground;
+}
+
+.noDataText {
+  @apply text-xs text-muted-foreground;
+}

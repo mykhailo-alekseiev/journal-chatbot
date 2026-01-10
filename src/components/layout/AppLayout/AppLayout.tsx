@@ -1,8 +1,9 @@
 import { Outlet, useRouterState } from "@tanstack/react-router";
 import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "~/components/ui/sidebar";
-import { AppSidebar } from "./AppSidebar";
+import { AppSidebar } from "../AppSidebar";
 import { Separator } from "~/components/ui/separator";
 import { useEffect } from "react";
+import styles from "./AppLayout.module.css";
 
 function AppLayoutContent() {
   const router = useRouterState();
@@ -17,13 +18,13 @@ function AppLayoutContent() {
   return (
     <>
       <AppSidebar />
-      <SidebarInset className="h-screen overflow-hidden">
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-4">
+      <SidebarInset className={styles.inset}>
+        <header className={styles.header}>
           <SidebarTrigger />
-          <Separator orientation="vertical" className="mr-2" />
-          <span className="text-sm font-medium">Journal Assistant</span>
+          <Separator orientation="vertical" className={styles.separator} />
+          <span className={styles.title}>Journal Assistant</span>
         </header>
-        <main className="flex-1 h-full overflow-auto">
+        <main className={styles.main}>
           <Outlet />
         </main>
       </SidebarInset>
