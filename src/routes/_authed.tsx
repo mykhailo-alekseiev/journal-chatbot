@@ -6,11 +6,11 @@ import { getSupabaseServerClient } from "../utils/supabase";
 import { AppLayout } from "../components/layout/AppLayout";
 
 const searchParamsSchema = z.object({
-  chatId: z.string().uuid().optional(),
+  chatId: z.uuid().optional(),
 });
 
 const loginInputSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string().min(1),
 });
 
