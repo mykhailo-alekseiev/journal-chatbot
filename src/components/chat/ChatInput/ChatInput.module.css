@@ -1,0 +1,21 @@
+@reference "~/styles/app.css";
+
+.container {
+  @apply border-t border-border bg-card;
+}
+
+.inner {
+  @apply max-w-3xl mx-auto px-4 py-4;
+}
+
+.inputRow {
+  @apply flex gap-2 items-end;
+}
+
+.textarea {
+  @apply min-h-10 max-h-32 resize-none flex-1;
+}
+
+.sendButton {
+  @apply h-10 w-10 shrink-0;
+}

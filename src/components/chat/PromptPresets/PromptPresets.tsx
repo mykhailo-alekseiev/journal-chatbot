@@ -1,5 +1,6 @@
 import { Button } from "~/components/ui/button";
 import { JOURNAL_PRESETS } from "~/features/journal/presets";
+import styles from "./PromptPresets.module.css";
 
 interface PromptPresetsProps {
   onSelect: (message: string) => void;
@@ -7,12 +8,12 @@ interface PromptPresetsProps {
 
 export function PromptPresets({ onSelect }: PromptPresetsProps) {
   return (
-    <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2 pt-4">
+    <div className={styles.grid}>
       {JOURNAL_PRESETS.map((preset) => (
         <Button
           key={preset.id}
           variant="outline"
-          className="justify-start h-auto py-3 px-4"
+          className={styles.presetButton}
           onClick={() => onSelect(preset.message)}
         >
           {preset.label}

@@ -1,0 +1,29 @@
+@reference "~/styles/app.css";
+
+.headerContainer {
+  @apply h-12 flex items-center;
+}
+
+.logoContainer {
+  @apply flex items-center gap-2 px-2;
+}
+
+.logoIcon {
+  @apply size-5;
+}
+
+.logoText {
+  @apply font-semibold;
+}
+
+.navIcon {
+  @apply size-4;
+}
+
+.placeholder {
+  @apply px-2 text-xs text-muted-foreground;
+}
+
+.logoutButton {
+  @apply cursor-pointer;
+}

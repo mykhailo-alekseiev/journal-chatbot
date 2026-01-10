@@ -1,0 +1,25 @@
+@reference "~/styles/app.css";
+
+.container {
+  @apply space-y-2 p-2;
+}
+
+.message {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.actions {
+  @apply flex items-center gap-2 flex-wrap;
+}
+
+.actionButton {
+  @apply px-2 py-1 rounded-sm uppercase font-black text-sm text-white;
+}
+
+.goBackButton {
+  @apply bg-emerald-500;
+}
+
+.startOverButton {
+  @apply bg-cyan-600;
+}

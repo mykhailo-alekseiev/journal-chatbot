@@ -7,6 +7,7 @@ import { stripMarkdown } from "~/lib/utils";
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { EntryDetailSheet } from "~/features/journal/components/EntryDetailSheet";
+import styles from "./entries.module.css";
 
 const entriesSearchSchema = z.object({
   entryId: z.string().optional(),
@@ -24,26 +25,26 @@ function Entries() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">Loading entries...</p>
+      <div className={styles.centered}>
+        <p className={styles.mutedText}>Loading entries...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-destructive">Error loading entries: {error.message}</p>
+      <div className={styles.centered}>
+        <p className={styles.errorText}>Error loading entries: {error.message}</p>
       </div>
     );
   }
 
   if (!entries || entries.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center px-4">
-        <div className="max-w-md space-y-3">
-          <h2 className="text-2xl font-semibold">No entries yet</h2>
-          <p className="text-muted-foreground">
+      <div className={styles.centeredColumn}>
+        <div className={styles.contentBox}>
+          <h2 className={styles.pageTitle}>No entries yet</h2>
+          <p className={styles.mutedText}>
             Start journaling by chatting with your AI assistant or create an entry here.
           </p>
         </div>
@@ -52,49 +53,43 @@ function Entries() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="border-b border-border px-6 py-4">
-        <h1 className="text-2xl font-semibold">Journal Entries</h1>
-        <p className="text-sm text-muted-foreground mt-1">{entries.length} total entries</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>Journal Entries</h1>
+        <p className={styles.entryCount}>{entries.length} total entries</p>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-4">
-        <div className="max-w-4xl space-y-3">
+      <div className={styles.entriesScroll}>
+        <div className={styles.entriesContainer}>
           {entries.map((entry) => (
             <Card
               key={entry.id}
-              className="p-4 hover:bg-accent/50 transition-colors cursor-pointer"
+              className={styles.entryCard}
               onClick={() => navigate({ to: "/entries", search: { entryId: entry.id } })}
             >
-              <div className="flex items-start gap-3">
+              <div className={styles.entryRow}>
                 {/* Mood emoji */}
                 {entry.mood && (
-                  <div className="text-2xl flex-shrink-0" title={getMoodConfig(entry.mood).label}>
+                  <div className={styles.moodEmoji} title={getMoodConfig(entry.mood).label}>
                     {getMoodConfig(entry.mood).emoji}
                   </div>
                 )}
 
-                <div className="flex-1 min-w-0">
+                <div className={styles.entryContent}>
                   {/* Date */}
-                  <div className="text-sm text-muted-foreground mb-1">
-                    {formatDate(entry.entry_date)}
-                  </div>
+                  <div className={styles.entryDate}>{formatDate(entry.entry_date)}</div>
 
                   {/* Summary */}
-                  {entry.summary && (
-                    <div className="font-medium mb-2 line-clamp-1">{entry.summary}</div>
-                  )}
+                  {entry.summary && <div className={styles.entrySummary}>{entry.summary}</div>}
 
                   {/* Content preview */}
-                  <div className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                    {stripMarkdown(entry.content)}
-                  </div>
+                  <div className={styles.entryPreview}>{stripMarkdown(entry.content)}</div>
 
                   {/* Tags */}
                   {entry.tags && entry.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
+                    <div className={styles.tagsContainer}>
                       {entry.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
+                        <Badge key={tag} variant="secondary" className={styles.tag}>
                           {tag}
                         </Badge>
                       ))}

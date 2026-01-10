@@ -1,0 +1,81 @@
+@reference "~/styles/app.css";
+
+.centered {
+  @apply flex items-center justify-center h-full;
+}
+
+.centeredColumn {
+  @apply flex flex-col items-center justify-center h-full text-center px-4;
+}
+
+.contentBox {
+  @apply max-w-md space-y-3;
+}
+
+.pageTitle {
+  @apply text-2xl font-semibold;
+}
+
+.mutedText {
+  @apply text-muted-foreground;
+}
+
+.errorText {
+  @apply text-destructive;
+}
+
+.pageContainer {
+  @apply flex flex-col h-full;
+}
+
+.pageHeader {
+  @apply border-b border-border px-6 py-4;
+}
+
+.entryCount {
+  @apply text-sm text-muted-foreground mt-1;
+}
+
+.entriesScroll {
+  @apply flex-1 overflow-y-auto px-6 py-4;
+}
+
+.entriesContainer {
+  @apply max-w-4xl space-y-3;
+}
+
+.entryCard {
+  @apply p-4 hover:bg-accent/50 transition-colors cursor-pointer;
+}
+
+.entryRow {
+  @apply flex items-start gap-3;
+}
+
+.moodEmoji {
+  @apply text-2xl flex-shrink-0;
+}
+
+.entryContent {
+  @apply flex-1 min-w-0;
+}
+
+.entryDate {
+  @apply text-sm text-muted-foreground mb-1;
+}
+
+.entrySummary {
+  @apply font-medium mb-2 line-clamp-1;
+}
+
+.entryPreview {
+  @apply text-sm text-muted-foreground line-clamp-2 mb-2;
+}
+
+.tagsContainer {
+  @apply flex flex-wrap gap-1;
+}
+
+.tag {
+  @apply text-xs;
+}

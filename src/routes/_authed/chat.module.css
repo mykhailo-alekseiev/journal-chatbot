@@ -1,0 +1,41 @@
+@reference "~/styles/app.css";
+
+.container {
+  @apply grid grid-rows-[1fr_auto] h-full overflow-hidden;
+}
+
+.messagesScroll {
+  @apply overflow-y-auto;
+}
+
+.emptyState {
+  @apply flex flex-col items-center justify-center h-full text-center px-4;
+}
+
+.emptyContent {
+  @apply max-w-md space-y-3;
+}
+
+.emptyTitle {
+  @apply text-2xl font-semibold;
+}
+
+.emptyDescription {
+  @apply text-muted-foreground;
+}
+
+.messagesContainer {
+  @apply max-w-3xl mx-auto px-4 py-6 space-y-4;
+}
+
+.messageBubble {
+  @apply rounded-lg px-4 py-3 max-w-prose;
+}
+
+.userMessage {
+  @apply bg-primary text-primary-foreground ml-auto;
+}
+
+.assistantMessage {
+  @apply bg-muted text-foreground;
+}

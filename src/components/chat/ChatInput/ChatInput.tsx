@@ -4,6 +4,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 import { Send } from "lucide-react";
 import { useIsMobile } from "~/hooks/use-mobile";
+import styles from "./ChatInput.module.css";
 
 const messageSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -26,8 +27,8 @@ export function ChatInput({ onSend }: ChatInputProps) {
   });
 
   return (
-    <div className="border-t border-border bg-card">
-      <div className="max-w-3xl mx-auto px-4 py-4">
+    <div className={styles.container}>
+      <div className={styles.inner}>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -36,9 +37,9 @@ export function ChatInput({ onSend }: ChatInputProps) {
         >
           <form.Field name="message">
             {(field) => (
-              <div className="flex gap-2 items-end">
+              <div className={styles.inputRow}>
                 <Textarea
-                  className="min-h-10 max-h-32 resize-none flex-1"
+                  className={styles.textarea}
                   value={field.state.value}
                   placeholder={
                     isMobile
@@ -58,7 +59,7 @@ export function ChatInput({ onSend }: ChatInputProps) {
                   <Button
                     type="submit"
                     size="icon"
-                    className="h-10 w-10 shrink-0"
+                    className={styles.sendButton}
                     disabled={!field.state.value.trim()}
                   >
                     <Send className="h-4 w-4" />

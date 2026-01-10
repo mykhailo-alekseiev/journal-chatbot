@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
+import styles from "./AppSidebar.module.css";
 
 const navItems = [
   { to: "/chat", icon: MessageSquare, label: "Chat" },
@@ -24,10 +25,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="h-12 flex items-center">
-        <div className="flex items-center gap-2 px-2">
-          <BookOpen className="size-5" />
-          <span className="font-semibold">Journal</span>
+      <SidebarHeader className={styles.headerContainer}>
+        <div className={styles.logoContainer}>
+          <BookOpen className={styles.logoIcon} />
+          <span className={styles.logoText}>Journal</span>
         </div>
       </SidebarHeader>
 
@@ -41,7 +42,7 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton isActive={!!isActive} render={<Link to={item.to} />}>
-                      <item.icon className="size-4" />
+                      <item.icon className={styles.navIcon} />
                       <span>{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -55,7 +56,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>History</SidebarGroupLabel>
           <SidebarGroupContent>
-            <p className="px-2 text-xs text-muted-foreground">Coming in Phase 3</p>
+            <p className={styles.placeholder}>Coming in Phase 3</p>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -67,9 +68,9 @@ export function AppSidebar() {
               onClick={() => {
                 router.navigate({ to: "/logout" });
               }}
-              className="cursor-pointer"
+              className={styles.logoutButton}
             >
-              <LogOut className="size-4" />
+              <LogOut className={styles.navIcon} />
               <span>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>

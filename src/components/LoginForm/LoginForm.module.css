@@ -1,0 +1,25 @@
+@reference "~/styles/app.css";
+
+.page {
+  @apply flex min-h-svh w-full items-center justify-center p-6 md:p-10;
+}
+
+.cardContainer {
+  @apply w-full max-w-sm;
+}
+
+.cardTitle {
+  @apply text-2xl;
+}
+
+.fieldError {
+  @apply text-sm text-red-500 mt-1;
+}
+
+.submitButton {
+  @apply w-full;
+}
+
+.formError {
+  @apply text-sm text-red-500 mt-2 text-center;
+}
