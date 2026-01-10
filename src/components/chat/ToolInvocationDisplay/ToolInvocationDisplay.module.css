@@ -1,4 +1,4 @@
-@reference "../../../styles/app.css";
+@reference "~/styles/app.css";
 
 .statusRow {
   @apply flex items-center gap-2 text-sm py-2;

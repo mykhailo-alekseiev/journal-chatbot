@@ -1,4 +1,4 @@
-@reference "../../../styles/app.css";
+@reference "~/styles/app.css";
 
 .container {
   @apply border-t border-border bg-card;

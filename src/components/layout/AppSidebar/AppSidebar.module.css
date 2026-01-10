@@ -1,4 +1,4 @@
-@reference "../../../styles/app.css";
+@reference "~/styles/app.css";
 
 .headerContainer {
   @apply h-12 flex items-center;
