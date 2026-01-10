@@ -15,7 +15,6 @@ import {
 import { useChatSessions, useDeleteChatSession } from "~/features/chats/api";
 import { formatTimestamp } from "~/lib/date";
 import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 import styles from "./AppSidebar.module.css";
 
 const navItems = [
@@ -76,16 +75,21 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <div className="flex items-center justify-between px-2">
+          <div className={styles.historyHeader}>
             <SidebarGroupLabel>History</SidebarGroupLabel>
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleNewChat}>
-              <Plus className="size-4" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className={styles.newChatButton}
+              onClick={handleNewChat}
+            >
+              <Plus className={styles.plusIcon} />
             </Button>
           </div>
           <SidebarGroupContent>
             {isLoading ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="size-4 animate-spin" />
+              <div className={styles.loadingContainer}>
+                <Loader2 className={styles.loadingSpinner} />
               </div>
             ) : sessions?.length === 0 ? (
               <p className={styles.placeholder}>No chat history</p>
@@ -96,13 +100,13 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       isActive={session.id === currentChatId}
                       render={<Link to="/chat" search={{ chatId: session.id }} />}
-                      className="pr-8"
+                      className={styles.sessionButton}
                     >
-                      <div className="flex flex-col items-start gap-0.5 overflow-hidden">
-                        <span className="truncate w-full text-sm">
+                      <div className={styles.sessionContent}>
+                        <span className={styles.sessionTitle}>
                           {session.title || "Untitled Chat"}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className={styles.sessionDate}>
                           {formatTimestamp(session.updated_at)}
                         </span>
                       </div>
@@ -110,13 +114,10 @@ export function AppSidebar() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className={cn(
-                        "absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6",
-                        "opacity-0 group-hover:opacity-100 transition-opacity",
-                      )}
+                      className={styles.deleteButton}
                       onClick={(e) => handleDeleteChat(e, session.id)}
                     >
-                      <Trash2 className="size-3" />
+                      <Trash2 className={styles.deleteIcon} />
                     </Button>
                   </SidebarMenuItem>
                 ))}

@@ -27,3 +27,49 @@
 .logoutButton {
   @apply cursor-pointer;
 }
+
+.historyHeader {
+  @apply flex items-center justify-between px-2;
+}
+
+.newChatButton {
+  @apply h-6 w-6;
+}
+
+.plusIcon {
+  @apply size-4;
+}
+
+.loadingContainer {
+  @apply flex items-center justify-center py-4;
+}
+
+.loadingSpinner {
+  @apply size-4 animate-spin;
+}
+
+/* Note: parent needs inline className="group" for group-hover to work */
+
+.sessionButton {
+  @apply pr-8;
+}
+
+.sessionContent {
+  @apply flex flex-col items-start gap-0.5 overflow-hidden;
+}
+
+.sessionTitle {
+  @apply truncate w-full text-sm;
+}
+
+.sessionDate {
+  @apply text-xs text-muted-foreground;
+}
+
+.deleteButton {
+  @apply absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity;
+}
+
+.deleteIcon {
+  @apply size-3;
+}
