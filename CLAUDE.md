@@ -166,3 +166,75 @@ bunx shadcn@latest add <component-name>
 - Use `cn()` utility for conditional/merged Tailwind classes
 - Components use Radix UI primitives for accessibility
 - Customize by editing the component source directly
+
+### CSS Modules with Tailwind
+
+Custom components use **CSS modules** with Tailwind's `@apply` directive for better separation of concerns and maintainability.
+
+**File structure pattern:**
+```
+ComponentName/
+  ComponentName.tsx
+  ComponentName.module.css
+  index.ts (barrel export)
+```
+
+**CSS module setup:**
+
+All CSS modules **must** include the `@reference` directive at the top to access Tailwind utilities:
+
+```css
+@reference "~/styles/app.css";
+
+.container {
+  @apply flex items-center gap-2 p-4;
+}
+
+.title {
+  @apply text-2xl font-semibold;
+}
+```
+
+**Usage in components:**
+
+```tsx
+import styles from "./ComponentName.module.css";
+
+export function ComponentName() {
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.title}>Title</h1>
+    </div>
+  );
+}
+```
+
+**When to use CSS modules:**
+
+- ✅ Custom components with multiple elements and consistent styling
+- ✅ Repeated style patterns across a component
+- ✅ Complex layouts that benefit from semantic class names
+- ❌ shadcn/ui components (keep inline Tailwind)
+- ❌ One-off styles or simple utility classes
+- ❌ Highly dynamic styles that change frequently
+
+**Dynamic classes with cn():**
+
+For conditional/dynamic styling, combine CSS module classes with `cn()`:
+
+```tsx
+import { cn } from "~/lib/utils";
+import styles from "./Message.module.css";
+
+<div className={cn(
+  styles.messageBubble,
+  message.role === "user" ? styles.userMessage : styles.assistantMessage
+)} />
+```
+
+**Important notes:**
+
+- Use `@reference "~/styles/app.css"` (~ alias configured in vite.config.ts)
+- Use **semantic naming** (`.container`, `.header`, `.actionButton`)
+- Keep CSS modules **co-located** with components
+- Export components via `index.ts` barrel files for clean imports
