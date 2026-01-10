@@ -77,19 +77,13 @@ function Entries() {
 
                 <div className={styles.entryContent}>
                   {/* Date */}
-                  <div className={styles.entryDate}>
-                    {formatDate(entry.entry_date)}
-                  </div>
+                  <div className={styles.entryDate}>{formatDate(entry.entry_date)}</div>
 
                   {/* Summary */}
-                  {entry.summary && (
-                    <div className={styles.entrySummary}>{entry.summary}</div>
-                  )}
+                  {entry.summary && <div className={styles.entrySummary}>{entry.summary}</div>}
 
                   {/* Content preview */}
-                  <div className={styles.entryPreview}>
-                    {stripMarkdown(entry.content)}
-                  </div>
+                  <div className={styles.entryPreview}>{stripMarkdown(entry.content)}</div>
 
                   {/* Tags */}
                   {entry.tags && entry.tags.length > 0 && (

@@ -56,9 +56,7 @@ function Chat() {
                 <div
                   className={cn(
                     styles.messageBubble,
-                    message.role === "user"
-                      ? styles.userMessage
-                      : styles.assistantMessage,
+                    message.role === "user" ? styles.userMessage : styles.assistantMessage,
                   )}
                 >
                   {message.parts.map((part, i) => {

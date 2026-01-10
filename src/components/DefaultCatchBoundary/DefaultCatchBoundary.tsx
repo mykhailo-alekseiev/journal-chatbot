@@ -24,10 +24,7 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
           Try Again
         </button>
         {isRoot ? (
-          <Link
-            to="/"
-            className={styles.actionButton}
-          >
+          <Link to="/" className={styles.actionButton}>
             Home
           </Link>
         ) : (

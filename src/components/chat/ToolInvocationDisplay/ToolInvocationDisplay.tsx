@@ -164,9 +164,7 @@ export function ToolInvocationDisplay({ part }: Props) {
               .map(([mood, count]) => (
                 <div key={mood} className={styles.moodItem}>
                   <span>{MOOD_SCALE[mood].emoji}</span>
-                  <span className={styles.moodPercent}>
-                    {Math.round((count / total) * 100)}%
-                  </span>
+                  <span className={styles.moodPercent}>{Math.round((count / total) * 100)}%</span>
                 </div>
               ))}
           </div>

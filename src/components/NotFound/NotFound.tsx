@@ -14,10 +14,7 @@ export function NotFound({ children }: { children?: any }) {
         >
           Go back
         </button>
-        <Link
-          to="/"
-          className={`${styles.actionButton} ${styles.startOverButton}`}
-        >
+        <Link to="/" className={`${styles.actionButton} ${styles.startOverButton}`}>
           Start Over
         </Link>
       </p>

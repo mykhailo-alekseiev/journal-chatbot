@@ -112,9 +112,7 @@ export function LoginForm() {
                     )}
                   </form.Subscribe>
                   {loginMutation.error && (
-                    <p className={styles.formError}>
-                      {loginMutation.error.message}
-                    </p>
+                    <p className={styles.formError}>{loginMutation.error.message}</p>
                   )}
                 </Field>
               </FieldGroup>
