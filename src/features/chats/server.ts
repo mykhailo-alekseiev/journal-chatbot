@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getSupabaseServerClient } from "~/utils/supabase";
-import type { ChatSession, ChatSessionListItem } from "./types";
+import type { ChatSession, ChatSessionListItem, ChatSessionUpdate } from "./types";
+import type { UIMessage } from "ai";
+import type { Database } from "~/lib/database.types";
 
 // List all sessions (without messages for performance)
 export const getChatSessionsFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -43,4 +45,85 @@ export const getChatSessionFn = createServerFn({ method: "GET" })
 
     if (error) throw new Error(error.message);
     return data as ChatSession;
+  });
+
+// Create new session
+export const createChatSessionFn = createServerFn({ method: "POST" })
+  .inputValidator((d: { messages: UIMessage[]; title?: string }) => d)
+  .handler(async (ctx) => {
+    const { messages, title } = ctx.data;
+    const supabase = getSupabaseServerClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const { data, error } = await supabase
+      .from("chat_sessions")
+      .insert({
+        user_id: user.id,
+        messages:
+          messages as unknown as Database["public"]["Tables"]["chat_sessions"]["Insert"]["messages"],
+        title: title || null,
+      })
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return data as ChatSession;
+  });
+
+// Update session (messages and/or title)
+export const updateChatSessionFn = createServerFn({ method: "POST" })
+  .inputValidator((d: { id: string; updates: { messages?: UIMessage[]; title?: string } }) => d)
+  .handler(async (ctx) => {
+    const { id, updates } = ctx.data;
+    const supabase = getSupabaseServerClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const dbUpdates: ChatSessionUpdate = {};
+    if (updates.messages) {
+      dbUpdates.messages = updates.messages as unknown as ChatSessionUpdate["messages"];
+    }
+    if (updates.title !== undefined) {
+      dbUpdates.title = updates.title;
+    }
+
+    const { data, error } = await supabase
+      .from("chat_sessions")
+      .update(dbUpdates)
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return data as ChatSession;
+  });
+
+// Delete session
+export const deleteChatSessionFn = createServerFn({ method: "POST" })
+  .inputValidator((id: string) => id)
+  .handler(async (ctx) => {
+    const id = ctx.data;
+    const supabase = getSupabaseServerClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const { error } = await supabase
+      .from("chat_sessions")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (error) throw new Error(error.message);
+    return { success: true };
   });
