@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Be extremely concise. Sacrifice grammar for the sake of concision.
 - List any unresolved questions at the end, if any
+- Use the code simplifier agent at the end of a long coding session, or to clean up complex PRs
 
 ## Pull Requests
 
