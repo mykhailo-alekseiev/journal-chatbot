@@ -6,7 +6,7 @@ import type { Database } from "~/lib/database.types";
 import { streamText, validateUIMessages } from "ai";
 
 // Schemas
-const idSchema = z.string().uuid();
+const idSchema = z.uuid();
 
 const createSessionSchema = z.object({
   messages: z.array(z.unknown()),
@@ -14,7 +14,7 @@ const createSessionSchema = z.object({
 });
 
 const updateSessionSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   updates: z.object({
     messages: z.array(z.unknown()).optional(),
     title: z.string().optional(),

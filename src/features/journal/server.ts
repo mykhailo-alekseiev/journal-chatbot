@@ -5,7 +5,7 @@ import type { JournalEntry } from "./types";
 import { Constants } from "~/lib/database.types";
 
 // Schemas
-const idSchema = z.string().uuid();
+const idSchema = z.uuid();
 
 const moodLevels = Constants.public.Enums.mood_level;
 
