@@ -12,10 +12,10 @@ export const useUpdateChatSession = ({ mutationConfig }: UseUpdateChatSessionOpt
   const { onSuccess, ...restConfig } = mutationConfig || {};
 
   return useMutation({
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, ...args) => {
       queryClient.invalidateQueries({ queryKey: getChatSessionsQueryOptions().queryKey });
-      queryClient.invalidateQueries({ queryKey: ["chats", "session", variables.id] });
-      onSuccess?.(data, variables, context);
+      queryClient.invalidateQueries({ queryKey: ["chats", "session", data.id] });
+      onSuccess?.(data, ...args);
     },
     ...restConfig,
     mutationFn: updateChatSessionFn,

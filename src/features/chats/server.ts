@@ -3,6 +3,7 @@ import { getSupabaseServerClient } from "~/utils/supabase";
 import type { ChatSession, ChatSessionListItem, ChatSessionUpdate } from "./types";
 import type { UIMessage } from "ai";
 import type { Database } from "~/lib/database.types";
+import { streamText } from "ai";
 
 // List all sessions (without messages for performance)
 export const getChatSessionsFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -126,4 +127,32 @@ export const deleteChatSessionFn = createServerFn({ method: "POST" })
 
     if (error) throw new Error(error.message);
     return { success: true };
+  });
+
+// Generate title for chat session
+export const generateChatTitleFn = createServerFn({ method: "POST" })
+  .inputValidator((d: { userMessage: string; assistantMessage: string }) => d)
+  .handler(async (ctx) => {
+    const { userMessage, assistantMessage } = ctx.data;
+    const supabase = getSupabaseServerClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const result = await streamText({
+      model: "zai/glm-4.7",
+      system:
+        "Generate a concise 3-5 word title for this chat conversation. Respond with only the title, no quotes or punctuation.",
+      messages: [
+        {
+          role: "user",
+          content: `User: ${userMessage}\n\nAssistant: ${assistantMessage}`,
+        },
+      ],
+    });
+
+    const title = await result.text;
+    return { title: title.trim() };
   });

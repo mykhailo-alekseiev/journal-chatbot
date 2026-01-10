@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { LoginForm } from "../components/LoginForm";
 import { getSupabaseServerClient } from "../utils/supabase";
 import { AppLayout } from "../components/layout/AppLayout";
+
+const searchParamsSchema = z.object({
+  chatId: z.string().uuid().optional(),
+});
 
 export const loginFn = createServerFn({ method: "POST" })
   .inputValidator((d: { email: string; password: string }) => d)
@@ -22,6 +27,7 @@ export const loginFn = createServerFn({ method: "POST" })
   });
 
 export const Route = createFileRoute("/_authed")({
+  validateSearch: searchParamsSchema,
   beforeLoad: ({ context }) => {
     if (!context.user) {
       throw new Error("Not authenticated");

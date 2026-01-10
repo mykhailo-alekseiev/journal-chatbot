@@ -5,7 +5,7 @@ import type { QueryConfig } from "~/lib/queryClient";
 export const getChatSessionQueryOptions = (id: string) => {
   return queryOptions({
     queryKey: ["chats", "session", id],
-    queryFn: () => getChatSessionFn(id),
+    queryFn: () => getChatSessionFn({ data: id }),
     enabled: !!id,
   });
 };
