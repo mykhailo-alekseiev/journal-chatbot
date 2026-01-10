@@ -9,8 +9,13 @@ const searchParamsSchema = z.object({
   chatId: z.string().uuid().optional(),
 });
 
+const loginInputSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
 export const loginFn = createServerFn({ method: "POST" })
-  .inputValidator((d: { email: string; password: string }) => d)
+  .inputValidator(loginInputSchema)
   .handler(async ({ data }) => {
     const supabase = getSupabaseServerClient();
     const { error } = await supabase.auth.signInWithPassword({

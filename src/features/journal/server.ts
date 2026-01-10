@@ -1,6 +1,32 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { getSupabaseServerClient } from "~/utils/supabase";
-import type { JournalEntry, JournalEntryUpdate } from "./types";
+import type { JournalEntry } from "./types";
+import { Constants } from "~/lib/database.types";
+
+// Schemas
+const idSchema = z.string().uuid();
+
+const moodLevels = Constants.public.Enums.mood_level;
+
+const createEntrySchema = z.object({
+  content: z.string().min(1),
+  summary: z.string().optional(),
+  entry_date: z.string().optional(),
+  mood: z.enum(moodLevels).optional(),
+  tags: z.array(z.string()).optional(),
+});
+
+const updateEntrySchema = z.object({
+  id: z.string().uuid(),
+  updates: z.object({
+    content: z.string().optional(),
+    summary: z.string().optional(),
+    entry_date: z.string().optional(),
+    mood: z.enum(moodLevels).optional(),
+    tags: z.array(z.string()).optional(),
+  }),
+});
 
 // List all entries for the current user
 export const getEntriesFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -24,7 +50,7 @@ export const getEntriesFn = createServerFn({ method: "GET" }).handler(async () =
 
 // Get single entry by ID
 export const getEntryByIdFn = createServerFn({ method: "GET" })
-  .inputValidator((id: string) => id)
+  .inputValidator(idSchema)
   .handler(async (ctx) => {
     const id = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -47,7 +73,7 @@ export const getEntryByIdFn = createServerFn({ method: "GET" })
 
 // Update entry
 export const updateEntryFn = createServerFn({ method: "POST" })
-  .inputValidator((d: { id: string; updates: JournalEntryUpdate }) => d)
+  .inputValidator(updateEntrySchema)
   .handler(async (ctx) => {
     const { id, updates } = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -71,7 +97,7 @@ export const updateEntryFn = createServerFn({ method: "POST" })
 
 // Delete entry
 export const deleteEntryFn = createServerFn({ method: "POST" })
-  .inputValidator((id: string) => id)
+  .inputValidator(idSchema)
   .handler(async (ctx) => {
     const id = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -93,15 +119,7 @@ export const deleteEntryFn = createServerFn({ method: "POST" })
 
 // Create entry (for manual creation via UI, not AI)
 export const createEntryFn = createServerFn({ method: "POST" })
-  .inputValidator(
-    (d: {
-      content: string;
-      summary?: string;
-      entry_date?: string;
-      mood?: JournalEntry["mood"];
-      tags?: string[];
-    }) => d,
-  )
+  .inputValidator(createEntrySchema)
   .handler(async (ctx) => {
     const input = ctx.data;
     const supabase = getSupabaseServerClient();
