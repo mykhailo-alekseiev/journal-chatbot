@@ -1,9 +1,30 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { getSupabaseServerClient } from "~/utils/supabase";
 import type { ChatSession, ChatSessionListItem, ChatSessionUpdate } from "./types";
-import type { UIMessage } from "ai";
 import type { Database } from "~/lib/database.types";
-import { streamText } from "ai";
+import { streamText, validateUIMessages } from "ai";
+
+// Schemas
+const idSchema = z.string().uuid();
+
+const createSessionSchema = z.object({
+  messages: z.array(z.unknown()),
+  title: z.string().optional(),
+});
+
+const updateSessionSchema = z.object({
+  id: z.string().uuid(),
+  updates: z.object({
+    messages: z.array(z.unknown()).optional(),
+    title: z.string().optional(),
+  }),
+});
+
+const generateTitleSchema = z.object({
+  userMessage: z.string().min(1),
+  assistantMessage: z.string().min(1),
+});
 
 // List all sessions (without messages for performance)
 export const getChatSessionsFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -27,7 +48,7 @@ export const getChatSessionsFn = createServerFn({ method: "GET" }).handler(async
 
 // Get single session with messages
 export const getChatSessionFn = createServerFn({ method: "GET" })
-  .inputValidator((id: string) => id)
+  .inputValidator(idSchema)
   .handler(async (ctx) => {
     const id = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -50,7 +71,7 @@ export const getChatSessionFn = createServerFn({ method: "GET" })
 
 // Create new session
 export const createChatSessionFn = createServerFn({ method: "POST" })
-  .inputValidator((d: { messages: UIMessage[]; title?: string }) => d)
+  .inputValidator(createSessionSchema)
   .handler(async (ctx) => {
     const { messages, title } = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -60,12 +81,14 @@ export const createChatSessionFn = createServerFn({ method: "POST" })
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
+    const validatedMessages = await validateUIMessages({ messages });
+
     const { data, error } = await supabase
       .from("chat_sessions")
       .insert({
         user_id: user.id,
         messages:
-          messages as unknown as Database["public"]["Tables"]["chat_sessions"]["Insert"]["messages"],
+          validatedMessages as unknown as Database["public"]["Tables"]["chat_sessions"]["Insert"]["messages"],
         title: title || null,
       })
       .select()
@@ -77,7 +100,7 @@ export const createChatSessionFn = createServerFn({ method: "POST" })
 
 // Update session (messages and/or title)
 export const updateChatSessionFn = createServerFn({ method: "POST" })
-  .inputValidator((d: { id: string; updates: { messages?: UIMessage[]; title?: string } }) => d)
+  .inputValidator(updateSessionSchema)
   .handler(async (ctx) => {
     const { id, updates } = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -89,7 +112,8 @@ export const updateChatSessionFn = createServerFn({ method: "POST" })
 
     const dbUpdates: ChatSessionUpdate = {};
     if (updates.messages) {
-      dbUpdates.messages = updates.messages as unknown as ChatSessionUpdate["messages"];
+      const validatedMessages = await validateUIMessages({ messages: updates.messages });
+      dbUpdates.messages = validatedMessages as unknown as ChatSessionUpdate["messages"];
     }
     if (updates.title !== undefined) {
       dbUpdates.title = updates.title;
@@ -109,7 +133,7 @@ export const updateChatSessionFn = createServerFn({ method: "POST" })
 
 // Delete session
 export const deleteChatSessionFn = createServerFn({ method: "POST" })
-  .inputValidator((id: string) => id)
+  .inputValidator(idSchema)
   .handler(async (ctx) => {
     const id = ctx.data;
     const supabase = getSupabaseServerClient();
@@ -131,7 +155,7 @@ export const deleteChatSessionFn = createServerFn({ method: "POST" })
 
 // Generate title for chat session
 export const generateChatTitleFn = createServerFn({ method: "POST" })
-  .inputValidator((d: { userMessage: string; assistantMessage: string }) => d)
+  .inputValidator(generateTitleSchema)
   .handler(async (ctx) => {
     const { userMessage, assistantMessage } = ctx.data;
     const supabase = getSupabaseServerClient();
