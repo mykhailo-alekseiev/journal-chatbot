@@ -1,4 +1,4 @@
-import type { ToolUIPart } from "ai";
+import type { DynamicToolUIPart, ToolUIPart } from "ai";
 import {
   Loader2,
   Check,
@@ -24,7 +24,7 @@ import {
 import styles from "./ToolInvocationDisplay.module.css";
 
 interface Props {
-  part: ToolUIPart;
+  part: ToolUIPart | DynamicToolUIPart;
 }
 
 export function ToolInvocationDisplay({ part }: Props) {

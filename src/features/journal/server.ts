@@ -18,7 +18,7 @@ const createEntrySchema = z.object({
 });
 
 const updateEntrySchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   updates: z.object({
     content: z.string().optional(),
     summary: z.string().optional(),

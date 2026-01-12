@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/chat")({
         const result = streamText({
           model: "zai/glm-4.7",
           system: JOURNAL_SYSTEM_PROMPT + contextMessage,
-          messages: convertToModelMessages(messages),
+          messages: await convertToModelMessages(messages),
           stopWhen: stepCountIs(5),
           tools: createJournalTools(supabase, user.id),
         });
