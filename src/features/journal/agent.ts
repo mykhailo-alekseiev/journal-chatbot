@@ -1,7 +1,13 @@
 import { tool, ToolLoopAgent, stepCountIs, InferAgentUIMessage } from "ai";
 import { z } from "zod";
 import { Constants } from "~/lib/database.types";
-import { today, daysAgo, nowISO, getDateSet, calculateStreak } from "~/lib/date";
+import {
+  today,
+  daysAgo,
+  nowISO,
+  getDateSet,
+  calculateStreak,
+} from "~/lib/date";
 import { getSupabaseServerClient } from "~/utils/supabase";
 import { JOURNAL_SYSTEM_PROMPT } from "./prompts";
 
@@ -21,7 +27,11 @@ export const journalTools = {
   save_entry: tool({
     description: "Create or update journal entry. Omit entry_id for new entry.",
     inputSchema: z.object({
-      entry_id: z.string().uuid().optional().describe("ID to update, omit for new"),
+      entry_id: z
+        .string()
+        .uuid()
+        .optional()
+        .describe("ID to update, omit for new"),
       content: z.string().describe("Entry content in first person"),
       summary: z.string().max(100).describe("One-line summary, max 100 chars"),
       entry_date: z.string().optional().describe("YYYY-MM-DD, default today"),
@@ -54,7 +64,9 @@ export const journalTools = {
       if (entry_id) {
         // Update existing entry
         const updateData = Object.fromEntries(
-          Object.entries({ ...fields, updated_at: nowISO() }).filter(([_, v]) => v !== undefined),
+          Object.entries({ ...fields, updated_at: nowISO() }).filter(
+            ([_, v]) => v !== undefined,
+          ),
         );
 
         const { data, error } = await supabase
@@ -91,10 +103,22 @@ export const journalTools = {
   query_entries: tool({
     description: "Search/filter entries by date range, text, or tag",
     inputSchema: z.object({
-      days: z.number().int().min(1).max(90).optional().describe("Look back N days"),
+      days: z
+        .number()
+        .int()
+        .min(1)
+        .max(90)
+        .optional()
+        .describe("Look back N days"),
       search: z.string().optional().describe("Text search query"),
       tag: z.string().optional().describe("Filter by tag"),
-      limit: z.number().int().min(1).max(20).optional().describe("Max results, default 10"),
+      limit: z
+        .number()
+        .int()
+        .min(1)
+        .max(20)
+        .optional()
+        .describe("Max results, default 10"),
       include_content: z.boolean().optional().describe("Include full content"),
     }),
     inputExamples: [
@@ -102,7 +126,13 @@ export const journalTools = {
       { input: { search: "продуктивний", limit: 5 } },
       { input: { tag: "work", days: 30 } },
     ],
-    execute: async ({ days, search, tag, limit = 10, include_content = false }) => {
+    execute: async ({
+      days,
+      search,
+      tag,
+      limit = 10,
+      include_content = false,
+    }) => {
       const { supabase, user } = await getUser();
       if (!user) return { success: false, error: "Unauthorized" };
 
@@ -131,7 +161,10 @@ export const journalTools = {
   analyze_journal: tool({
     description: "Get mood trends and journaling stats for a period",
     inputSchema: z.object({
-      period: z.enum(["week", "month", "all"]).optional().describe("Analysis period, default week"),
+      period: z
+        .enum(["week", "month", "all"])
+        .optional()
+        .describe("Analysis period, default week"),
     }),
     inputExamples: [
       { input: { period: "week" as const } },
@@ -155,7 +188,10 @@ export const journalTools = {
       const entries = data || [];
       const totalEntries = entries.length;
       const avgLength = entries.length
-        ? Math.round(entries.reduce((sum, e) => sum + e.content.length, 0) / entries.length)
+        ? Math.round(
+            entries.reduce((sum, e) => sum + e.content.length, 0) /
+              entries.length,
+          )
         : 0;
 
       const dates = getDateSet(entries);
@@ -192,7 +228,7 @@ export const journalTools = {
 export type JournalToolName = keyof typeof journalTools;
 
 export const journalAgent = new ToolLoopAgent({
-  model: "anthropic/claude-sonnet-4-20250514",
+  model: "zai/glm-4.7",
   instructions: JOURNAL_SYSTEM_PROMPT,
   tools: journalTools,
 
@@ -210,7 +246,9 @@ export const journalAgent = new ToolLoopAgent({
 
     const contextLines = recentEntries?.length
       ? recentEntries
-          .map((e) => `• ${e.entry_date}: ${e.summary} (${e.mood || "no mood"})`)
+          .map(
+            (e) => `• ${e.entry_date}: ${e.summary} (${e.mood || "no mood"})`,
+          )
           .join("\n")
       : "No recent entries.";
 
