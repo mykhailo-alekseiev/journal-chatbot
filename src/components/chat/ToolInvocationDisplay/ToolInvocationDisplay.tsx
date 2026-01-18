@@ -1,26 +1,7 @@
 import type { DynamicToolUIPart, ToolUIPart } from "ai";
-import {
-  Loader2,
-  Check,
-  AlertCircle,
-  Calendar,
-  Search,
-  BarChart3,
-  Tag,
-  TrendingUp,
-} from "lucide-react";
+import { Loader2, Check, AlertCircle, Search, BarChart3, TrendingUp } from "lucide-react";
 import { cn } from "~/lib/utils";
-import {
-  getToolConfig,
-  isSaveEntryResult,
-  isRecentEntriesResult,
-  isSearchResult,
-  isStatsResult,
-  isEntriesByTagResult,
-  isMoodTrendsResult,
-  MOOD_SCALE,
-  type MoodLevel,
-} from "~/features/journal";
+import { getToolConfig, isJournalTool, MOOD_SCALE, type MoodLevel } from "~/features/journal";
 import styles from "./ToolInvocationDisplay.module.css";
 
 interface Props {
@@ -28,12 +9,10 @@ interface Props {
 }
 
 export function ToolInvocationDisplay({ part }: Props) {
-  // toolName is encoded in type: "tool-{toolName}"
   const toolName = part.type.slice(5);
   const state = part.state;
   const isLoading = state === "input-streaming" || state === "input-available";
   const hasError = state === "output-error";
-  const result = state === "output-available" ? part.output : null;
 
   const config = getToolConfig(toolName);
   const Icon = config.icon;
@@ -60,146 +39,99 @@ export function ToolInvocationDisplay({ part }: Props) {
     );
   }
 
-  // Create entry result
-  if (toolName === "create_journal_entry" && isSaveEntryResult(result)) {
-    if (result.success) {
+  // save_entry result
+  if (isJournalTool(part, "save_entry")) {
+    if (part.output.success) {
+      const action = part.output.updated ? "updated" : "saved";
       return (
         <div className={`${styles.statusRow} ${styles.successText}`}>
           <Check className={styles.icon} />
-          <span>Entry saved</span>
+          <span>Entry {action}</span>
         </div>
       );
     }
     return (
       <div className={`${styles.statusRow} ${styles.errorText}`}>
         <AlertCircle className={styles.icon} />
-        <span>Failed to save: {result.error}</span>
+        <span>Failed to save: {part.output.error}</span>
       </div>
     );
   }
 
-  // Update entry result
-  if (toolName === "update_journal_entry" && isSaveEntryResult(result)) {
-    if (result.success) {
-      return (
-        <div className={`${styles.statusRow} ${styles.updateText}`}>
-          <Check className={styles.icon} />
-          <span>Entry updated</span>
-        </div>
-      );
-    }
-    return (
-      <div className={`${styles.statusRow} ${styles.errorText}`}>
-        <AlertCircle className={styles.icon} />
-        <span>Failed to update: {result.error}</span>
-      </div>
-    );
-  }
-
-  // Recent entries result
-  if (toolName === "get_recent_entries" && isRecentEntriesResult(result)) {
-    if (result.success && result.entries?.length) {
+  // query_entries result
+  if (isJournalTool(part, "query_entries")) {
+    if (part.output.success) {
+      const count = part.output.count || 0;
       return (
         <div className={styles.resultContainer}>
           <div className={styles.resultHeader}>
-            <Calendar className={styles.icon} />
-            <span>Found {result.count} recent entries</span>
+            <Search className={styles.icon} />
+            <span>
+              Found {count} {count === 1 ? "entry" : "entries"}
+            </span>
           </div>
         </div>
       );
     }
     return (
       <div className={`${styles.statusRow} ${styles.loadingText}`}>
-        <Calendar className={styles.icon} />
-        <span>No recent entries found</span>
+        <Search className={styles.icon} />
+        <span>No entries found</span>
       </div>
     );
   }
 
-  // Search result
-  if (toolName === "search_entries" && isSearchResult(result)) {
-    if (result.success) {
-      return (
-        <div className={styles.resultContainer}>
-          <div className={styles.resultHeader}>
-            <Search className={styles.icon} />
-            <span>Found {result.count} matching entries</span>
+  // analyze_journal result
+  if (isJournalTool(part, "analyze_journal")) {
+    const distribution = part.output.mood_distribution || {};
+    const total = Object.values(distribution).reduce((a, b) => a + b, 0);
+
+    return (
+      <div className={styles.resultCard}>
+        <div className={styles.resultHeaderWithMargin}>
+          <BarChart3 className={styles.icon} />
+          <span>Journal insights ({part.output.period})</span>
+        </div>
+
+        {/* Stats row */}
+        <div className={styles.statsGrid}>
+          <div>
+            <div className={styles.statValue}>{part.output.total_entries}</div>
+            <div className={styles.statLabel}>entries</div>
+          </div>
+          <div>
+            <div className={styles.statValue}>{part.output.streak_days}</div>
+            <div className={styles.statLabel}>day streak</div>
+          </div>
+          <div>
+            <div className={styles.statValue}>{part.output.avg_entry_length}</div>
+            <div className={styles.statLabel}>avg chars</div>
           </div>
         </div>
-      );
-    }
-  }
 
-  // Entries by tag result
-  if (toolName === "get_entries_by_tag" && isEntriesByTagResult(result)) {
-    if (result.success) {
-      return (
-        <div className={styles.resultContainer}>
-          <div className={styles.resultHeader}>
-            <Tag className={styles.icon} />
-            <span>
-              Found {result.count} entries tagged <strong>#{result.tag}</strong>
-            </span>
-          </div>
-        </div>
-      );
-    }
-  }
-
-  // Mood trends result
-  if (toolName === "get_mood_trends" && isMoodTrendsResult(result)) {
-    if (result.success && result.mood_distribution) {
-      const distribution = result.mood_distribution;
-      const total = Object.values(distribution).reduce((a, b) => a + b, 0);
-
-      return (
-        <div className={styles.resultCard}>
-          <div className={styles.resultHeaderWithMargin}>
-            <TrendingUp className={styles.icon} />
-            <span>Mood trends ({result.period_days} days)</span>
-          </div>
-          <div className={styles.moodDistribution}>
-            {(Object.entries(distribution) as [MoodLevel, number][])
-              .filter(([, count]) => count > 0)
-              .map(([mood, count]) => (
-                <div key={mood} className={styles.moodItem}>
-                  <span>{MOOD_SCALE[mood].emoji}</span>
-                  <span className={styles.moodPercent}>{Math.round((count / total) * 100)}%</span>
-                </div>
-              ))}
-          </div>
-          {total === 0 && <div className={styles.noDataText}>No mood data yet</div>}
-        </div>
-      );
-    }
-  }
-
-  // Stats result
-  if (toolName === "get_entry_stats" && isStatsResult(result)) {
-    if (result.success) {
-      return (
-        <div className={styles.resultCard}>
-          <div className={styles.resultHeaderWithMargin}>
-            <BarChart3 className={styles.icon} />
-            <span>Your journaling stats ({result.period})</span>
-          </div>
-          <div className={styles.statsGrid}>
-            <div>
-              <div className={styles.statValue}>{result.total_entries}</div>
-              <div className={styles.statLabel}>entries</div>
+        {/* Mood distribution */}
+        {total > 0 && (
+          <>
+            <div className={styles.moodDivider}>
+              <TrendingUp className={styles.smallIcon} />
+              <span className={styles.moodLabel}>Mood distribution</span>
             </div>
-            <div>
-              <div className={styles.statValue}>{result.streak_days}</div>
-              <div className={styles.statLabel}>day streak</div>
+            <div className={styles.moodDistribution}>
+              {(Object.entries(distribution) as [MoodLevel, number][])
+                .filter(([, count]) => count > 0)
+                .map(([mood, count]) => (
+                  <div key={mood} className={styles.moodItem}>
+                    <span>{MOOD_SCALE[mood].emoji}</span>
+                    <span className={styles.moodPercent}>{Math.round((count / total) * 100)}%</span>
+                  </div>
+                ))}
             </div>
-            <div>
-              <div className={styles.statValue}>{result.avg_entry_length}</div>
-              <div className={styles.statLabel}>avg chars</div>
-            </div>
-          </div>
-        </div>
-      );
-    }
+          </>
+        )}
+
+        {total === 0 && <div className={styles.noDataText}>No mood data yet</div>}
+      </div>
+    );
   }
 
   // Fallback

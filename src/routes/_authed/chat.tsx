@@ -12,6 +12,7 @@ import { useChatSession, useCreateChatSession, useUpdateChatSession } from "~/fe
 import { parseMessages } from "~/features/chats/types";
 import { generateChatTitleFn } from "~/features/chats/server";
 import styles from "./chat.module.css";
+import type { JournalAgentUIMessage } from "~/features/journal";
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -86,12 +87,10 @@ function Chat() {
     [createSession, updateSession, navigate, generateTitle],
   );
 
-  const { messages, sendMessage, setMessages } = useChat({
+  const { messages, sendMessage, setMessages } = useChat<JournalAgentUIMessage>({
     onToolCall: ({ toolCall }) => {
-      if (
-        toolCall.toolName === "update_journal_entry" ||
-        toolCall.toolName === "create_journal_entry"
-      ) {
+      // Invalidate journal queries when entries are saved
+      if (toolCall.toolName === "save_entry") {
         queryClient.invalidateQueries({ queryKey: ["journal"] });
       }
     },
@@ -104,7 +103,7 @@ function Chat() {
   // Sync messages when session loads or clear when starting new chat
   useEffect(() => {
     if (existingSession) {
-      setMessages(parseMessages(existingSession.messages));
+      setMessages(parseMessages(existingSession.messages) as JournalAgentUIMessage[]);
     } else if (!chatId && prevChatIdRef.current) {
       // Clear messages when navigating from existing chat to new chat
       setMessages([]);

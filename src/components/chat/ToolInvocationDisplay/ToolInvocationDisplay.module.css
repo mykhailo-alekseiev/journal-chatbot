@@ -56,6 +56,18 @@
   @apply text-xs text-muted-foreground;
 }
 
+.moodDivider {
+  @apply flex items-center gap-1 text-muted-foreground mt-3 mb-2;
+}
+
+.smallIcon {
+  @apply size-3;
+}
+
+.moodLabel {
+  @apply text-xs;
+}
+
 .moodDistribution {
   @apply flex items-center gap-3 flex-wrap;
 }
