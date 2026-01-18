@@ -2,7 +2,7 @@ import type { UIMessage } from "ai";
 import { convertToModelMessages } from "ai";
 import { createFileRoute } from "@tanstack/react-router";
 import { getSupabaseServerClient } from "~/utils/supabase";
-import { journalAgent } from "~/features/journal";
+import { journalAgent } from "~/features/journal/agent";
 
 export const Route = createFileRoute("/api/chat")({
   server: {

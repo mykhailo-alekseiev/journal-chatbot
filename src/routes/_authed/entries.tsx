@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { useEntries } from "~/features/journal/api";
+import { useEntries } from "~/features/journal/api/get-entries";
 import { getMoodConfig } from "~/features/journal/types";
 import { formatDate } from "~/lib/date";
 import { stripMarkdown } from "~/lib/utils";

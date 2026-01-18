@@ -1,4 +1,4 @@
-import { useDeleteEntry } from "../api";
+import { useDeleteEntry } from "../api/delete-entry";
 import {
   AlertDialog,
   AlertDialogAction,

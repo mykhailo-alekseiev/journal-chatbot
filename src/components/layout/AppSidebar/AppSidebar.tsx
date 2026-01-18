@@ -12,7 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { useChatSessions, useDeleteChatSession } from "~/features/chats/api";
+import { useChatSessions } from "~/features/chats/api/get-sessions";
+import { useDeleteChatSession } from "~/features/chats/api/delete-session";
 import { formatTimestamp } from "~/lib/date";
 import { Button } from "~/components/ui/button";
 import styles from "./AppSidebar.module.css";

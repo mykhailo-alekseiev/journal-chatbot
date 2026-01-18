@@ -9,11 +9,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useCallback, lazy, Suspense, memo } from "react";
 
 const ReactMarkdown = lazy(() => import("react-markdown"));
-import { useChatSession, useCreateChatSession, useUpdateChatSession } from "~/features/chats/api";
+import { useChatSession } from "~/features/chats/api/get-session";
+import { useCreateChatSession } from "~/features/chats/api/create-session";
+import { useUpdateChatSession } from "~/features/chats/api/update-session";
 import { parseMessages } from "~/features/chats/types";
 import { generateChatTitleFn } from "~/features/chats/server";
 import styles from "./chat.module.css";
-import type { JournalAgentUIMessage } from "~/features/journal";
+import type { JournalAgentUIMessage } from "~/features/journal/agent";
 
 // Memoized message component to prevent re-renders
 const MessageItem = memo(({ message }: { message: JournalAgentUIMessage }) => {

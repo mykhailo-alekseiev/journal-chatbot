@@ -2,7 +2,8 @@ import { memo } from "react";
 import type { DynamicToolUIPart, ToolUIPart } from "ai";
 import { Loader2, Check, AlertCircle, Search, BarChart3, TrendingUp } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { getToolConfig, isJournalTool, MOOD_SCALE, type MoodLevel } from "~/features/journal";
+import { getToolConfig } from "~/features/journal/config";
+import { isJournalTool, MOOD_SCALE, type MoodLevel } from "~/features/journal/types";
 import styles from "./ToolInvocationDisplay.module.css";
 
 interface Props {

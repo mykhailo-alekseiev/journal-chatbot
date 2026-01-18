@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Markdown from "react-markdown";
-import { useEntry } from "../api";
+import { useEntry } from "../api/get-entry";
 import { getMoodConfig } from "../types";
 import { formatDate, formatTimestamp } from "~/lib/date";
 import {
