@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { DynamicToolUIPart, ToolUIPart } from "ai";
 import { Loader2, Check, AlertCircle, Search, BarChart3, TrendingUp } from "lucide-react";
 import { cn } from "~/lib/utils";
@@ -8,7 +9,7 @@ interface Props {
   part: ToolUIPart | DynamicToolUIPart;
 }
 
-export function ToolInvocationDisplay({ part }: Props) {
+export const ToolInvocationDisplay = memo(({ part }: Props) => {
   const toolName = part.type.slice(5);
   const state = part.state;
   const isLoading = state === "input-streaming" || state === "input-available";
@@ -20,7 +21,7 @@ export function ToolInvocationDisplay({ part }: Props) {
   // Loading state
   if (isLoading) {
     return (
-      <div className={`${styles.statusRow} ${styles.loadingText}`}>
+      <div className={cn(styles.statusRow, styles.loadingText)}>
         <Loader2 className={styles.spinningIcon} />
         <span>{config.label}...</span>
       </div>
@@ -30,7 +31,7 @@ export function ToolInvocationDisplay({ part }: Props) {
   // Error state
   if (hasError) {
     return (
-      <div className={`${styles.statusRow} ${styles.errorText}`}>
+      <div className={cn(styles.statusRow, styles.errorText)}>
         <AlertCircle className={styles.icon} />
         <span>
           {config.label} failed: {part.errorText || "Unknown error"}
@@ -44,14 +45,14 @@ export function ToolInvocationDisplay({ part }: Props) {
     if (part.output.success) {
       const action = part.output.updated ? "updated" : "saved";
       return (
-        <div className={`${styles.statusRow} ${styles.successText}`}>
+        <div className={cn(styles.statusRow, styles.successText)}>
           <Check className={styles.icon} />
           <span>Entry {action}</span>
         </div>
       );
     }
     return (
-      <div className={`${styles.statusRow} ${styles.errorText}`}>
+      <div className={cn(styles.statusRow, styles.errorText)}>
         <AlertCircle className={styles.icon} />
         <span>Failed to save: {part.output.error}</span>
       </div>
@@ -74,7 +75,7 @@ export function ToolInvocationDisplay({ part }: Props) {
       );
     }
     return (
-      <div className={`${styles.statusRow} ${styles.loadingText}`}>
+      <div className={cn(styles.statusRow, styles.loadingText)}>
         <Search className={styles.icon} />
         <span>No entries found</span>
       </div>
@@ -136,9 +137,9 @@ export function ToolInvocationDisplay({ part }: Props) {
 
   // Fallback
   return (
-    <div className={`${styles.statusRow} ${styles.loadingText}`}>
+    <div className={cn(styles.statusRow, styles.loadingText)}>
       <Icon className={cn(styles.icon, config.color)} />
       <span>{config.label} complete</span>
     </div>
   );
-}
+});

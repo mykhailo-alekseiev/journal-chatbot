@@ -6,13 +6,55 @@ import { ToolInvocationDisplay } from "~/components/chat/ToolInvocationDisplay";
 import { PromptPresets } from "~/components/chat/PromptPresets";
 import { ChatInput } from "~/components/chat/ChatInput";
 import { useQueryClient } from "@tanstack/react-query";
-import ReactMarkdown from "react-markdown";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, lazy, Suspense, memo } from "react";
+
+const ReactMarkdown = lazy(() => import("react-markdown"));
 import { useChatSession, useCreateChatSession, useUpdateChatSession } from "~/features/chats/api";
 import { parseMessages } from "~/features/chats/types";
 import { generateChatTitleFn } from "~/features/chats/server";
 import styles from "./chat.module.css";
 import type { JournalAgentUIMessage } from "~/features/journal";
+
+// Memoized message component to prevent re-renders
+const MessageItem = memo(({ message }: { message: JournalAgentUIMessage }) => {
+  return (
+    <div>
+      <div
+        className={cn(
+          styles.messageBubble,
+          message.role === "user" ? styles.userMessage : styles.assistantMessage,
+        )}
+      >
+        {message.parts.map((part, i) => {
+          if (part.type === "text") {
+            return (
+              <div key={i} className="markdown">
+                <Suspense fallback={<span>{part.text}</span>}>
+                  <ReactMarkdown>{part.text}</ReactMarkdown>
+                </Suspense>
+              </div>
+            );
+          }
+          if (isToolUIPart(part)) {
+            return <ToolInvocationDisplay key={i} part={part} />;
+          }
+          return null;
+        })}
+      </div>
+    </div>
+  );
+});
+
+// Static empty state content (hoisted to avoid recreation)
+const EmptyStateContent = (
+  <>
+    <h2 className={styles.emptyTitle}>Welcome to Journal Chatbot</h2>
+    <p className={styles.emptyDescription}>
+      Start a conversation with your AI-powered journal assistant. Share your thoughts, reflect on
+      your day, or explore ideas.
+    </p>
+  </>
+);
 
 export const Route = createFileRoute("/_authed/chat")({
   component: Chat,
@@ -119,7 +161,7 @@ function Chat() {
   // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages.length]);
 
   return (
     <div className={styles.container}>
@@ -128,39 +170,14 @@ function Chat() {
         {messages.length === 0 ? (
           <div className={styles.emptyState}>
             <div className={styles.emptyContent}>
-              <h2 className={styles.emptyTitle}>Welcome to Journal Chatbot</h2>
-              <p className={styles.emptyDescription}>
-                Start a conversation with your AI-powered journal assistant. Share your thoughts,
-                reflect on your day, or explore ideas.
-              </p>
+              {EmptyStateContent}
               <PromptPresets onSelect={(message) => sendMessage({ text: message })} />
             </div>
           </div>
         ) : (
           <div className={styles.messagesContainer}>
             {messages.map((message) => (
-              <div key={message.id}>
-                <div
-                  className={cn(
-                    styles.messageBubble,
-                    message.role === "user" ? styles.userMessage : styles.assistantMessage,
-                  )}
-                >
-                  {message.parts.map((part, i) => {
-                    if (part.type === "text") {
-                      return (
-                        <div key={i} className="markdown">
-                          <ReactMarkdown>{part.text}</ReactMarkdown>
-                        </div>
-                      );
-                    }
-                    if (isToolUIPart(part)) {
-                      return <ToolInvocationDisplay key={i} part={part} />;
-                    }
-                    return null;
-                  })}
-                </div>
-              </div>
+              <MessageItem key={message.id} message={message} />
             ))}
             <div ref={messagesEndRef} />
           </div>

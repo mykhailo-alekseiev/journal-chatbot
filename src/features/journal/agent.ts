@@ -27,11 +27,7 @@ export const journalTools = {
   save_entry: tool({
     description: "Create or update journal entry. Omit entry_id for new entry.",
     inputSchema: z.object({
-      entry_id: z
-        .string()
-        .uuid()
-        .optional()
-        .describe("ID to update, omit for new"),
+      entry_id: z.uuid().optional().describe("ID to update, omit for new"),
       content: z.string().describe("Entry content in first person"),
       summary: z.string().max(100).describe("One-line summary, max 100 chars"),
       entry_date: z.string().optional().describe("YYYY-MM-DD, default today"),
